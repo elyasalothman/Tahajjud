@@ -1,17 +1,32 @@
+
+const CACHE = 'rafiq-cache-20260328-191035';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './assets/css/styles.css',
+  './assets/js/app.js',
+  './assets/js/config.json',
+  './data/adhkar.json',
+  './data/resources.json',
+  './assets/img/icon-192.png',
+  './assets/img/icon-512.png'
+];
+
 self.addEventListener('install', (e)=>{
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
+});
+
+self.addEventListener('activate', (e)=>{
   e.waitUntil(
-    caches.open('rafiq-cache-v1').then(c=>c.addAll([
-      './',
-      './index.html',
-      './assets/css/styles.css',
-      './assets/js/app.js',
-      './assets/js/config.js',
-      './pages/resources.html'
-    ]))
+    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(()=> self.clients.claim())
   );
 });
+
 self.addEventListener('fetch', (e)=>{
   e.respondWith(
-    caches.match(e.request).then((r)=> r || fetch(e.request))
+    caches.match(e.request).then(r => r || fetch(e.request).catch(()=> caches.match('./index.html')))
   );
 });

@@ -1,64 +1,135 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" data-theme="dark">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<link rel="manifest" href="./manifest.json"/>
-<link rel="stylesheet" href="./assets/css/styles.css"/>
-<title>رفيق المسلم</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#0f172a"/>
+  <link rel="manifest" href="./manifest.webmanifest"/>
+  <link rel="icon" href="./assets/img/icon-192.png"/>
+  <link rel="stylesheet" href="./assets/css/styles.css"/>
+  <title>رفيق المسلم</title>
 </head>
 <body>
 <header>
-  <h1>رفيق المسلم</h1>
-  <nav>
-    <a href="index.html" aria-current="page">الرئيسية</a>
-    <a href="./pages/resources.html">روابط مفيدة</a>
-  </nav>
+  <div class="header-wrap">
+    <div class="brand"><img src="./assets/img/icon-192.png" alt=""/><span>رفيق المسلم</span></div>
+    <div class="toolbar">
+      <button id="toggleTheme" title="الوضع الليلي/النهاري">☯</button>
+    </div>
+  </div>
 </header>
+
 <main>
-<section class="card">
-  <h2>مواقيت اليوم</h2>
-  <div id="status" class="status"></div>
-  <div class="controls">
-    <button id="btn_loc">تحديد موقعي</button>
-    <label>أو اختر مدينة: <select id="city"><option value="">— اختر —</option></select></label>
+  <div class="card">
+    <div class="grid">
+      <div class="kpi"><div class="label">التاريخ الهجري</div><div class="value" id="hijri">—</div></div>
+      <div class="kpi"><div class="label">الصلاة القادمة</div><div class="value"><span id="nextPrayerName">—</span> <span class="small">(</span><span id="nextPrayerTime">—</span><span class="small">)</span></div><div class="small" id="nextCountdown">—</div></div>
+      <div class="kpi"><div class="label">الإصدار</div><div class="value" id="version">0.0.0</div><div class="small">Build: <span id="build">—</span></div></div>
+    </div>
   </div>
-  <table class="times">
-    <tr><th>الفجر</th><td id="t_fajr">—</td></tr>
-    <tr><th>الشروق</th><td id="t_sunrise">—</td></tr>
-    <tr><th>الضحى</th><td id="t_duha">—</td></tr>
-    <tr><th>الظهر</th><td id="t_dhuhr">—</td></tr>
-    <tr><th>العصر</th><td id="t_asr">—</td></tr>
-    <tr><th>المغرب</th><td id="t_maghrib">—</td></tr>
-    <tr><th>العشاء</th><td id="t_isha">—</td></tr>
-    <tr><th>الثلث الأخير</th><td id="t_lastthird">—</td></tr>
-  </table>
-  <div class="next">
-    <strong>الصلاة القادمة:</strong> <span id="next_name">—</span>
-    <span class="cd" id="next_countdown"></span>
-  </div>
-  <p class="note">طريقة الحساب: <b>أم القرى</b> · مذهب العصر: <b>الحنبلي (ظل مثله)</b> · عرض الوقت: <b>12 ساعة</b>.</p>
-</section>
 
-<section class="card">
-  <h2>اتجاه القبلة</h2>
-  <p>زاوية القبلة من الشمال الحقيقي: <b id="qibla_bearing">—</b></p>
-  <div class="compass">
-    <div class="dial"></div>
-    <div id="compass_arrow" class="arrow"></div>
-  </div>
-  <button id="enable_compass">تفعيل البوصلة</button>
-  <p class="hint">للأدق: ضع الهاتف أفقيًا بعيدًا عن المعادن، وقد يلزم تحريك "رقم 8" للمعايرة.</p>
-</section>
+  <div class="card">
+    <div class="nav" role="tablist" aria-label="التنقل">
+      <button class="active" data-target="times">المواقيت</button>
+      <button data-target="qibla">القبلة</button>
+      <button data-target="adhkar">الأذكار</button>
+      <button data-target="tasbeeh">المسبحة</button>
+      <button data-target="resources">روابط</button>
+      <button data-target="about">عن</button>
+    </div>
 
-<section class="card small">
-  <h3>عن التطبيق</h3>
-  <p>الإصدار: <span id="app_version">—</span>. هذا تطبيق ويب خفيف يعمل دون اتصال بعد أول زيارة.</p>
-</section>
+    <section id="times" class="section active">
+      <div class="row">
+        <button class="btn" id="useLocation">تحديد موقعي</button>
+        <select id="citySelect"><option value="">— اختر مدينة —</option></select>
+        <button class="btn secondary" id="useCity">استخدام المدينة</button>
+        <span class="small" id="ptMeta"></span>
+      </div>
+      <div class="small notice" id="ptStatus"></div>
+
+      <div class="row" style="margin-top:10px">
+        <span class="badge">طريقة الحساب: أم القرى</span>
+        <span class="badge">العصر: حنبلي (ظل مثله)</span>
+        <span class="badge">الوقت: 12 ساعة</span>
+      </div>
+
+      <table class="table" style="margin-top:10px">
+        <tr><th>الفجر</th><td id="t_fajr">—</td></tr>
+        <tr><th>الشروق</th><td id="t_sunrise">—</td></tr>
+        <tr><th>الضحى</th><td id="t_duha">—</td></tr>
+        <tr><th>الظهر</th><td id="t_dhuhr">—</td></tr>
+        <tr><th>العصر</th><td id="t_asr">—</td></tr>
+        <tr><th>المغرب</th><td id="t_maghrib">—</td></tr>
+        <tr><th>العشاء</th><td id="t_isha">—</td></tr>
+        <tr><th>الثلث الأخير</th><td id="t_lastthird">—</td></tr>
+      </table>
+
+      <p class="small" style="margin:10px 0 0">تنبيه: وقت الضحى تقريبي (الشروق + 15 دقيقة) إلى (قبل الظهر بـ 10 دقائق) ويمكن تعديله من الإعدادات لاحقًا.</p>
+    </section>
+
+    <section id="qibla" class="section">
+      <p>زاوية القبلة (من الشمال الحقيقي): <b id="qiblaDeg">—</b></p>
+      <div class="compass">
+        <div class="dial"></div>
+        <div id="needle" class="needle"></div>
+      </div>
+      <div class="row">
+        <button class="btn" id="enableCompass">تفعيل البوصلة</button>
+        <span class="small" id="compassStatus"></span>
+      </div>
+      <div class="small" id="compassAccuracy"></div>
+      <p class="small">للأفضل: ضع الهاتف أفقيًا بعيدًا عن المعادن، وقد تحتاج حركة «رقم 8» للمعايرة.</p>
+    </section>
+
+    <section id="adhkar" class="section">
+      <div class="grid">
+        <div class="card"><div id="morning"></div></div>
+        <div class="card"><div id="evening"></div></div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="card"><div id="sleep"></div></div>
+        <div class="card"><div id="afterPrayer"></div></div>
+      </div>
+      <div class="card" style="margin-top:10px"><div id="daily"></div></div>
+      <p class="small">تُحفظ التكرارات لليوم الحالي فقط وتُعاد تلقائيًا في اليوم التالي.</p>
+    </section>
+
+    <section id="tasbeeh" class="section">
+      <div class="row" style="justify-content:center">
+        <div class="kpi"><div class="label">العدّاد</div><div class="value" id="tasbeehCount">0</div></div>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:8px">
+        <button class="btn" id="tasbeehBtn">اضغط للتسبيح</button>
+        <button class="btn danger" id="tasbeehReset">تصفير</button>
+      </div>
+      <p class="small" style="text-align:center">اهتزاز خفيف لكل ضغطة، واهتزاز مميز كل 33.</p>
+    </section>
+
+    <section id="resources" class="section">
+      <h3>القرآن الكريم</h3>
+      <ul id="resQuran"></ul>
+      <h3>الحديث الشريف</h3>
+      <ul id="resHadith"></ul>
+      <h3>الفتاوى والعلم الشرعي</h3>
+      <ul id="resFatwa"></ul>
+    </section>
+
+    <section id="about" class="section">
+      <p>رفيق المسلم: تطبيق ويب بسيط يساعدك على المواقيت والقبلة والأذكار وروابط العلم.</p>
+      <ul>
+        <li>الإصدار: <b id="version2">(انظر أعلى الصفحة)</b></li>
+        <li>المواقيت: أم القرى + العصر حنبلي (ظل مثله)</li>
+        <li>يعمل دون اتصال بعد أول زيارة (PWA)</li>
+      </ul>
+      <p class="small">ملاحظة: قد تختلف مواقيت الصلاة الدقيقة باختلاف الجهة الرسمية بالمدينة (التقويم المحلي). يمكن إضافة ضبط دقائق (tune) لاحقًا.</p>
+    </section>
+
+  </div>
+
 </main>
-<footer>
-  <small>© رفيق المسلم</small>
-</footer>
-<script type="module" src="./assets/js/app.js"></script>
+
+<div class="footer">© رفيق المسلم</div>
+
+<script src="./assets/js/app.js" type="module"></script>
 </body>
 </html>
