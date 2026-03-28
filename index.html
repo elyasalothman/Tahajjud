@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفيق المسلم</title>
+    <style>
+        :root {
+            --primary-color: #2E8B57; 
+            --bg-color: #f4f9f4; 
+            --text-color: #333;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 0; 
+            text-align: center; 
+        }
+        header { 
+            background-color: var(--primary-color); 
+            color: white; 
+            padding: 1rem 0; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        nav { margin-top: 15px; }
+        nav button { 
+            background-color: white; 
+            color: var(--primary-color); 
+            border: none; 
+            padding: 10px 20px; 
+            margin: 0 5px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-family: inherit;
+            transition: 0.3s;
+        }
+        nav button:hover { background-color: #e0f2e9; }
+        .section { 
+            display: none; 
+            padding: 20px; 
+            max-width: 600px; 
+            margin: 30px auto; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+        }
+        .active { display: block; }
+        h2 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; display: inline-block; }
+        .prayer-time, .dhikr-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 15px 10px; 
+            border-bottom: 1px solid #eee; 
+            font-size: 1.1rem;
+        }
+        .prayer-time:last-child { border-bottom: none; }
+        .dhikr-item { 
+            flex-direction: column; 
+            align-items: flex-start; 
+            text-align: right; 
+            gap: 15px; 
+        }
+        .count-btn { 
+            background-color: var(--primary-color); 
+            color: white; 
+            border: none; 
+            padding: 8px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            align-self: flex-end; 
+            font-family: inherit;
+        }
+        .compass-icon { font-size: 60px; margin: 20px; }
+        .status-msg { color: #666; font-size: 0.9rem; margin-bottom: 15px;}
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>رفيق المسلم</h1>
+        <nav>
+            <button onclick="showSection('athan')">مواقيت الصلاة</button>
+            <button onclick="showSection('qibla')">القبلة</button>
+            <button onclick="showSection('adhkar')">الأذكار</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="athan" class="section active">
+            <h2>مواقيت الصلاة</h2>
+            <p class="status-msg" id="location-status">جاري طلب إذن الموقع...</p>
+            <div id="prayer-times-container"></div>
+        </section>
+
+        <section id="qibla" class="section">
+            <h2>اتجاه القبلة</h2>
+            <p>لتحديد اتجاه القبلة بدقة متناهية، يُفضل استخدام تطبيق البوصلة المدمج في هاتفك الجوال.</p>
+            <div class="compass-icon">🕋</div>
+        </section>
+
+        <section id="adhkar" class="section">
+            <h2>أذكار الصباح والمساء</h2>
+            <div class="dhikr-item">
+                <p>"اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ."</p>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>"اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ."</p>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>"سُبْحَانَ اللهِ وَبِحَمْدِهِ."</p>
+                <button class="count-btn" onclick="decrement(this, 100)">التكرار: 100</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // دالة التنقل بين الأقسام
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // دالة مسبحة الأذكار (العداد التنازلي)
+        function decrement(btn, maxCount) {
+            let currentText = btn.innerText;
+            let currentCount = parseInt(currentText.split(':')[1]);
+            
+            if (currentCount > 0) {
+                currentCount--;
+                btn.innerText = `التكرار: ${currentCount}`;
+                if(currentCount === 0) {
+                    btn.style.backgroundColor = '#777';
+                    btn.innerText = 'تم الإنجاز ✓';
+                    btn.disabled = true;
+                }
+            }
+        }
+
+        // --- دوال الموقع الجغرافي ومواقيت الصلاة --- //
+
+        function getUserLocation() {
+            const statusText = document.getElementById('location-status');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        statusText.innerText = "تم تحديد الموقع بنجاح.";
+                        fetchPrayerTimes(position.coords.latitude, position.coords.longitude);
+                    },
+                    (error) => {
+                        statusText.innerText = "تعذر الوصول للموقع. يرجى تفعيل الـ GPS (أو السماح للمتصفح). تم عرض مواقيت مكة المكرمة كبديل.";
+                        // في حال الرفض، نعرض مواقيت مكة المكرمة افتراضياً
+                        fetchPrayerTimes(21.4225, 39.8262); 
+                    }
+                );
+            } else {
+                statusText.innerText = "متصفحك لا يدعم ميزة تحديد الموقع.";
+            }
+        }
+
+        async function fetchPrayerTimes(lat, lng) {
+            try {
+                // استخدام الإحداثيات الممررة للدالة لجلب المواقيت
+                const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=4`);
+                const data = await response.json();
+                const timings = data.data.timings;
+                
+                const prayers = {
+                    'Fajr': 'الفجر', 'Sunrise': 'الشروق', 'Dhuhr': 'الظهر', 
+                    'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء'
+                };
+
+                let html = '';
+                for (let [key, name] of Object.entries(prayers)) {
+                    html += `<div class="prayer-time"><span><strong>${name}</strong></span> <span>${timings[key]}</span></div>`;
+                }
+                document.getElementById('prayer-times-container').innerHTML = html;
+            } catch (error) {
+                document.getElementById('prayer-times-container').innerHTML = 'تعذر جلب المواقيت. يرجى التحقق من اتصالك بالإنترنت.';
+            }
+        }
+
+        // تشغيل دالة تحديد الموقع فور تحميل الصفحة
+        window.onload = getUserLocation;
+    </script>
+</body>
+</html>
