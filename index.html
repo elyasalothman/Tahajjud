@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="theme-color" content="#0f172a"/>
+  <meta name="theme-color" content="#081426"/>
   <link rel="manifest" href="./manifest.webmanifest"/>
   <link rel="icon" href="./assets/img/icon-192.png"/>
   <link rel="stylesheet" href="./assets/css/styles.css"/>
@@ -20,12 +20,12 @@
 <main>
   <div class="card">
     <div class="grid">
-      <div class="kpi"><div class="label">التاريخ الهجري</div><div class="value" id="hijri">—</div></div>
+      <div class="kpi"><div class="label">التاريخ الهجري</div><div class="value secondary" id="hijri">—</div></div>
       <div class="kpi"><div class="label">الصلاة القادمة</div>
         <div class="value"><span id="nextPrayerName">—</span> <span class="small">(</span><span id="nextPrayerTime">—</span><span class="small">)</span></div>
         <div class="small" id="nextCountdown">—</div>
       </div>
-      <div class="kpi"><div class="label">الإصدار</div><div class="value" id="version">0.0.0</div><div class="small">Build: <span id="build">—</span></div></div>
+      <div class="kpi"><div class="label">المدينة</div><div class="value" id="cityDisplay">—</div><div class="small" id="ptMeta"></div></div>
     </div>
   </div>
 
@@ -47,7 +47,6 @@
         <button class="btn" id="useLocation">تحديد موقعي</button>
         <select id="citySelect"><option value="">— اختر مدينة —</option></select>
         <button class="btn secondary" id="useCity">استخدام المدينة</button>
-        <span class="small" id="ptMeta"></span>
       </div>
       <div class="small notice" id="ptStatus"></div>
 
@@ -79,15 +78,9 @@
     </section>
 
     <section id="adhkar" class="section">
-      <div class="grid">
-        <div class="card"><div id="morning"></div></div>
-        <div class="card"><div id="evening"></div></div>
-      </div>
-      <div class="grid" style="margin-top:10px">
-        <div class="card"><div id="sleep"></div></div>
-        <div class="card"><div id="afterPrayer"></div></div>
-      </div>
-      <div class="card" style="margin-top:10px"><div id="daily"></div></div>
+      <p class="small">اختر القسم ثم تظهر الأذكار مرتبة.</p>
+      <div id="adhkarPills" class="pills"></div>
+      <div id="adhkarContainer"></div>
       <p class="small">تُحفظ التكرارات لليوم الحالي فقط.</p>
     </section>
 
@@ -130,15 +123,15 @@
     </section>
 
     <section id="about" class="section">
-      <p>نسخة موسعة تشمل مواقيت/قبلة/أذكار/مسبحة/تعلم/أدوات/روابط.</p>
+      <p>نسخة موسعة تشمل مواقيت/قبلة/أذكار (مفهرسة)/مسبحة/تعلم/أدوات/روابط.</p>
       <ul><li>المواقيت: أم القرى + العصر حنبلي (ظل مثله)</li><li>PWA: يعمل دون اتصال بعد أول زيارة</li></ul>
-      <p class="small">قد تختلف المواقيت بدقائق عن التقويم المحلي لبعض المدن.</p>
+      <p class="small">الإصدار يظهر أسفل الصفحة.</p>
     </section>
 
   </div>
 </main>
 
-<div class="footer">© رفيق المسلم</div>
+<div class="footer">© رفيق المسلم · الإصدار: <span id="footerVersion">0</span></div>
 <script src="./assets/js/app.js" type="module"></script>
 </body>
 </html>

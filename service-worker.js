@@ -1,4 +1,4 @@
-const CACHE = 'rafiq-plus-cache-20260328-191810';
+const CACHE = 'rafiq-plus3-cache-20260328-201611';
 const ASSETS = [
   './',
   './index.html',

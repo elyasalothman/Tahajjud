@@ -1,6 +1,18 @@
 {
   "morning": [
     {
+      "text": "أصبحنا وأصبح الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له...",
+      "repeat": 1,
+      "source": "ثابت في الأذكار",
+      "ref": "https://islamqa.info/ar/answers/217496"
+    },
+    {
+      "text": "اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور",
+      "repeat": 1,
+      "source": "ثابت",
+      "ref": "https://islamqa.info/ar/answers/217496"
+    },
+    {
       "text": "آية الكرسي (البقرة: 255)",
       "repeat": 1,
       "source": "صحيح",
@@ -23,9 +35,27 @@
       "repeat": 3,
       "source": "صحيح",
       "ref": "https://islamqa.info/ar/answers/217496"
+    },
+    {
+      "text": "سبحان الله وبحمده",
+      "repeat": 100,
+      "source": "صحيح",
+      "ref": "https://dorar.net/hadith/sharh/40346"
     }
   ],
   "evening": [
+    {
+      "text": "أمسينا وأمسى الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له...",
+      "repeat": 1,
+      "source": "ثابت",
+      "ref": "https://islamqa.info/ar/answers/217496"
+    },
+    {
+      "text": "اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير",
+      "repeat": 1,
+      "source": "ثابت",
+      "ref": "https://islamqa.info/ar/answers/217496"
+    },
     {
       "text": "آية الكرسي (البقرة: 255)",
       "repeat": 1,
@@ -43,6 +73,12 @@
       "repeat": 3,
       "source": "صحيح",
       "ref": "https://islamqa.info/ar/answers/217496"
+    },
+    {
+      "text": "سبحان الله وبحمده",
+      "repeat": 100,
+      "source": "صحيح",
+      "ref": "https://dorar.net/hadith/sharh/40346"
     }
   ],
   "sleep": [
@@ -63,11 +99,29 @@
       "repeat": 1,
       "source": "صحيح",
       "ref": "https://islamqa.info/ar/answers/240793"
+    },
+    {
+      "text": "باسمك اللهم أموت وأحيا",
+      "repeat": 1,
+      "source": "صحيح",
+      "ref": "https://dorar.net/hadith/sharh/139381"
+    },
+    {
+      "text": "تسبيح فاطمة (33/33/34)",
+      "repeat": 1,
+      "source": "صحيح",
+      "ref": "https://dorar.net/hadith/sharh/11950"
     }
   ],
   "afterPrayer": [
     {
       "text": "أستغفر الله (ثلاثًا) ثم: اللهم أنت السلام ومنك السلام تباركت يا ذا الجلال والإكرام",
+      "repeat": 1,
+      "source": "صحيح",
+      "ref": "https://islamport.com/l/fqh/3397/108.htm"
+    },
+    {
+      "text": "سبحان الله 33، الحمد لله 33، الله أكبر 33، ثم تمام المئة: لا إله إلا الله وحده لا شريك له...",
       "repeat": 1,
       "source": "صحيح",
       "ref": "https://islamport.com/l/fqh/3397/108.htm"
@@ -85,6 +139,18 @@
       "repeat": 1,
       "source": "حصن المسلم",
       "ref": "https://sunnah.com/"
+    },
+    {
+      "text": "عند دخول المسجد: اللهم افتح لي أبواب رحمتك",
+      "repeat": 1,
+      "source": "ثابت",
+      "ref": "https://islamqa.info/ar/answers/217496"
+    },
+    {
+      "text": "عند الخروج من المسجد: اللهم إني أسألك من فضلك",
+      "repeat": 1,
+      "source": "ثابت",
+      "ref": "https://islamqa.info/ar/answers/217496"
     }
   ]
 }
