@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رفيق المسلم</title>
+    <title>رفيق المسلم - الباقيات</title>
     <style>
         :root {
-            --primary-color: #2E8B57; 
-            --bg-color: #f4f9f4; 
+            --primary-color: #1a5e3a; 
+            --bg-color: #f0f4f1; 
             --text-color: #333;
+            --accent-color: #27ae60;
         }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -21,151 +22,294 @@
         header { 
             background-color: var(--primary-color); 
             color: white; 
-            padding: 1rem 0; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 1.5rem 0; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        nav { margin-top: 15px; }
-        nav button { 
+        header h1 { margin: 0; font-size: 2rem; }
+        .nav-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+        .nav-btn { 
             background-color: white; 
             color: var(--primary-color); 
-            border: none; 
-            padding: 10px 20px; 
-            margin: 0 5px; 
-            border-radius: 5px; 
+            border: 2px solid var(--primary-color); 
+            padding: 12px; 
+            border-radius: 8px; 
             cursor: pointer; 
             font-weight: bold; 
-            font-family: inherit;
-            transition: 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
-        nav button:hover { background-color: #e0f2e9; }
-        .section { 
-            display: none; 
-            padding: 20px; 
-            max-width: 600px; 
-            margin: 30px auto; 
-            background: white; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-        }
-        .active { display: block; }
-        h2 { border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; display: inline-block; }
-        .prayer-time, .dhikr-item { 
-            display: flex; 
-            justify-content: space-between; 
-            padding: 15px 10px; 
-            border-bottom: 1px solid #eee; 
-            font-size: 1.1rem;
-        }
-        .prayer-time:last-child { border-bottom: none; }
-        .dhikr-item { 
-            flex-direction: column; 
-            align-items: flex-start; 
-            text-align: right; 
-            gap: 15px; 
-        }
-        .count-btn { 
+        .nav-btn:hover, .nav-btn.active-btn { 
             background-color: var(--primary-color); 
             color: white; 
-            border: none; 
-            padding: 8px 20px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            align-self: flex-end; 
-            font-family: inherit;
         }
-        .compass-icon { font-size: 60px; margin: 20px; }
-        .status-msg { color: #666; font-size: 0.9rem; margin-bottom: 15px;}
+        .section { 
+            display: none; 
+            padding: 25px; 
+            max-width: 750px; 
+            margin: 0 auto 40px; 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08); 
+            text-align: right;
+        }
+        .active { display: block; }
+        h2 { 
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color); 
+            padding-bottom: 10px; 
+            text-align: center;
+        }
+        .prayer-time {
+            display: flex; 
+            justify-content: space-between; 
+            padding: 15px; 
+            border-bottom: 1px solid #eee; 
+            font-size: 1.2rem;
+            background: #fafafa;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .dhikr-item { 
+            padding: 20px 15px; 
+            border-bottom: 1px solid #e0e0e0; 
+            font-size: 1.15rem;
+            line-height: 1.8;
+            position: relative;
+        }
+        .dhikr-item:last-child { border-bottom: none; }
+        .source {
+            display: block;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+        }
+        .count-btn { 
+            background-color: var(--accent-color); 
+            color: white; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 15px;
+            display: inline-block;
+            transition: 0.2s;
+        }
+        .count-btn:active { transform: scale(0.95); }
+        .completed { background-color: #95a5a6 !important; cursor: default; }
+        .status-msg { text-align: center; color: #666; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>رفيق المسلم</h1>
-        <nav>
-            <button onclick="showSection('athan')">مواقيت الصلاة</button>
-            <button onclick="showSection('qibla')">القبلة</button>
-            <button onclick="showSection('adhkar')">الأذكار</button>
-        </nav>
     </header>
+
+    <div class="nav-container">
+        <button class="nav-btn active-btn" onclick="showSection('athan', this)">مواقيت الصلاة</button>
+        <button class="nav-btn" onclick="showSection('morning', this)">أذكار الصباح</button>
+        <button class="nav-btn" onclick="showSection('evening', this)">أذكار المساء</button>
+        <button class="nav-btn" onclick="showSection('sleep', this)">أذكار النوم</button>
+        <button class="nav-btn" onclick="showSection('prayer', this)">أذكار الصلاة</button>
+        <button class="nav-btn" onclick="showSection('quranic', this)">أدعية قرآنية</button>
+        <button class="nav-btn" onclick="showSection('prophetic', this)">أدعية نبوية</button>
+        <button class="nav-btn" onclick="showSection('travel', this)">أذكار السفر</button>
+        <button class="nav-btn" onclick="showSection('ruqyah', this)">الرقية الشرعية</button>
+        <button class="nav-btn" onclick="showSection('ahwal', this)">أذكار الأحوال</button>
+    </div>
 
     <main>
         <section id="athan" class="section active">
             <h2>مواقيت الصلاة</h2>
-            <p class="status-msg" id="location-status">جاري طلب إذن الموقع...</p>
+            <p class="status-msg" id="location-status">جاري تحديد الموقع...</p>
             <div id="prayer-times-container"></div>
         </section>
 
-        <section id="qibla" class="section">
-            <h2>اتجاه القبلة</h2>
-            <p>لتحديد اتجاه القبلة بدقة متناهية، يُفضل استخدام تطبيق البوصلة المدمج في هاتفك الجوال.</p>
-            <div class="compass-icon">🕋</div>
-        </section>
-
-        <section id="adhkar" class="section">
-            <h2>أذكار الصباح والمساء</h2>
+        <section id="morning" class="section">
+            <h2>أذكار الصباح (من الصحيحين)</h2>
             <div class="dhikr-item">
-                <p>"اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ."</p>
-                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
-            </div>
-            <div class="dhikr-item">
-                <p>"اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ الْمَصِيرُ."</p>
+                <p>"اللَّهُمَّ أنْتَ رَبِّي لا إلَهَ إلَّا أنْتَ، خَلَقْتَنِي وأنا عَبْدُكَ، وأنا علَى عَهْدِكَ ووَعْدِكَ ما اسْتَطَعْتُ، أعُوذُ بكَ مِن شَرِّ ما صَنَعْتُ، أبُوءُ لكَ بنِعْمَتِكَ عَلَيَّ، وأَبُوءُ لكَ بذَنْبِي فاغْفِرْ لِي، فإنَّه لا يَغْفِرُ الذُّنُوبَ إلَّا أنْتَ."</p>
+                <span class="source">(سيد الاستغفار - رواه البخاري)</span>
                 <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
             </div>
             <div class="dhikr-item">
                 <p>"سُبْحَانَ اللهِ وَبِحَمْدِهِ."</p>
+                <span class="source">(من قالها مائة مرة حين يصبح وحين يمسي لم يأت أحد يوم القيامة بأفضل مما جاء به - رواه مسلم)</span>
                 <button class="count-btn" onclick="decrement(this, 100)">التكرار: 100</button>
             </div>
         </section>
+
+        <section id="evening" class="section">
+            <h2>أذكار المساء (من الصحيحين)</h2>
+            <div class="dhikr-item">
+                <p>"أَمْسَيْنَا وَأَمْسَى المُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إلَهَ إلَّا اللَّهُ، وَحْدَهُ لا شَرِيكَ له... رَبِّ أَسْأَلُكَ خَيْرَ ما في هذِه اللَّيْلَةِ وَخَيْرَ ما بَعْدَهَا، وَأَعُوذُ بكَ مِن شَرِّ ما في هذِه اللَّيْلَةِ وَشَرِّ ما بَعْدَهَا."</p>
+                <span class="source">(رواه مسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
+        <section id="sleep" class="section">
+            <h2>أذكار والقرآن عند النوم</h2>
+            <div class="dhikr-item">
+                <p>قراءة آية الكرسي: ﴿اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...﴾</p>
+                <span class="source">(من قرأها حين يأوي إلى فراشه لم يزل عليه من الله حافظ - رواه البخاري)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>قراءة الآيتين من آخر سورة البقرة: ﴿آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ...﴾</p>
+                <span class="source">(من قرأهما في ليلة كفتاه - رواه البخاري ومسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>"بِاسْمِكَ رَبِّ وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، إنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بما تَحْفَظُ به عِبَادَكَ الصَّالِحِينَ."</p>
+                <span class="source">(رواه البخاري ومسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
+        <section id="prayer" class="section">
+            <h2>أذكار دبر الصلوات المكتوبة</h2>
+            <div class="dhikr-item">
+                <p>"أستغفر الله" (ثلاثاً)، "اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ ذَا الجَلَالِ وَالإِكْرَامِ."</p>
+                <span class="source">(رواه مسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>"لا إلَهَ إلَّا اللَّهُ وَحْدَهُ لا شَرِيكَ له، له المُلْكُ، وَلَهُ الحَمْدُ، وَهو علَى كُلِّ شيءٍ قَدِيرٌ، اللَّهُمَّ لا مَانِعَ لِما أَعْطَيْتَ، وَلَا مُعْطِيَ لِما مَنَعْتَ، وَلَا يَنْفَعُ ذَا الجَدِّ مِنْكَ الجَدُّ."</p>
+                <span class="source">(رواه البخاري ومسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
+        <section id="quranic" class="section">
+            <h2>أدعية من القرآن الكريم</h2>
+            <div class="dhikr-item">
+                <p>﴿رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ﴾</p>
+                <span class="source">(البقرة: 201)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>﴿رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً إِنَّكَ أَنْتَ الْوَهَّابُ﴾</p>
+                <span class="source">(آل عمران: 8)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
+        <section id="prophetic" class="section">
+            <h2>أدعية نبوية صحيحة</h2>
+            <div class="dhikr-item">
+                <p>"اللَّهُمَّ إنِّي أسْأَلُكَ الهُدَى والتُّقَى، والعَفَافَ والغِنَى."</p>
+                <span class="source">(رواه مسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>"اللَّهُمَّ إنِّي أعُوذُ بكَ مِنَ الهَمِّ والحَزَنِ، والعَجْزِ والكَسَلِ، والبُخْلِ والجُبْنِ، وضَلَعِ الدَّيْنِ، وغَلَبَةِ الرِّجَالِ."</p>
+                <span class="source">(رواه البخاري)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
+        <section id="travel" class="section">
+            <h2>أذكار السفر</h2>
+            <div class="dhikr-item">
+                <p>الله أكبر، الله أكبر، الله أكبر ﴿سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ * وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ﴾، "اللَّهُمَّ إنَّا نَسْأَلُكَ في سَفَرِنَا هذا البِرَّ وَالتَّقْوَى، وَمِنَ العَمَلِ ما تَرْضَى..."</p>
+                <span class="source">(رواه مسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
+        <section id="ruqyah" class="section">
+            <h2>الرقية الشرعية</h2>
+            <div class="dhikr-item">
+                <p>قراءة سورة الفاتحة، وآية الكرسي، والإخلاص، والفلق، والناس.</p>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p>"أَذْهِبِ البَاسَ رَبَّ النَّاسِ، اشْفِ وأَنْتَ الشَّافِي، لا شِفَاءَ إلَّا شِفَاؤُكَ، شِفَاءً لا يُغَادِرُ سَقَمًا."</p>
+                <span class="source">(رواه البخاري ومسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
+        <section id="ahwal" class="section">
+            <h2>أذكار الأحوال المتفرقة</h2>
+            <div class="dhikr-item">
+                <p><strong>عند دخول الخلاء:</strong> "اللَّهُمَّ إنِّي أعُوذُ بكَ مِنَ الخُبُثِ والخَبَائِثِ."</p>
+                <span class="source">(رواه البخاري ومسلم)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+            <div class="dhikr-item">
+                <p><strong>عند الخروج من المنزل:</strong> "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ، لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ."</p>
+                <span class="source">(رواه أبو داود والترمذي وصححه الألباني)</span>
+                <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+            </div>
+        </section>
+
     </main>
 
     <script>
-        // دالة التنقل بين الأقسام
-        function showSection(sectionId) {
+        // دالة التنقل بين الأقسام وتغيير لون الزر النشط
+        function showSection(sectionId, btnElement) {
+            // إخفاء كل الأقسام
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            // إظهار القسم المطلوب
             document.getElementById(sectionId).classList.add('active');
+            
+            // إزالة التفعيل من كل الأزرار
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active-btn'));
+            // تفعيل الزر المضغوط
+            if(btnElement) btnElement.classList.add('active-btn');
         }
 
-        // دالة مسبحة الأذكار (العداد التنازلي)
+        // دالة العداد التنازلي للأذكار
         function decrement(btn, maxCount) {
             let currentText = btn.innerText;
+            if (currentText.includes('تم')) return; // إذا اكتمل لا تفعل شيئاً
+
             let currentCount = parseInt(currentText.split(':')[1]);
             
             if (currentCount > 0) {
                 currentCount--;
                 btn.innerText = `التكرار: ${currentCount}`;
                 if(currentCount === 0) {
-                    btn.style.backgroundColor = '#777';
+                    btn.classList.add('completed');
                     btn.innerText = 'تم الإنجاز ✓';
-                    btn.disabled = true;
                 }
             }
         }
 
         // --- دوال الموقع الجغرافي ومواقيت الصلاة --- //
-
         function getUserLocation() {
             const statusText = document.getElementById('location-status');
             
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        statusText.innerText = "تم تحديد الموقع بنجاح.";
+                        statusText.style.display = 'none';
                         fetchPrayerTimes(position.coords.latitude, position.coords.longitude);
                     },
                     (error) => {
-                        statusText.innerText = "تعذر الوصول للموقع. يرجى تفعيل الـ GPS (أو السماح للمتصفح). تم عرض مواقيت مكة المكرمة كبديل.";
-                        // في حال الرفض، نعرض مواقيت مكة المكرمة افتراضياً
+                        statusText.innerText = "تعذر الوصول للموقع. تم عرض مواقيت مكة المكرمة كبديل.";
                         fetchPrayerTimes(21.4225, 39.8262); 
                     }
                 );
             } else {
                 statusText.innerText = "متصفحك لا يدعم ميزة تحديد الموقع.";
+                fetchPrayerTimes(21.4225, 39.8262);
             }
         }
 
         async function fetchPrayerTimes(lat, lng) {
             try {
-                // استخدام الإحداثيات الممررة للدالة لجلب المواقيت
                 const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=4`);
                 const data = await response.json();
                 const timings = data.data.timings;
@@ -185,7 +329,7 @@
             }
         }
 
-        // تشغيل دالة تحديد الموقع فور تحميل الصفحة
+        // بدء التشغيل
         window.onload = getUserLocation;
     </script>
 </body>
