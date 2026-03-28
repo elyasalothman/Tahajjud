@@ -35,7 +35,6 @@
         .toolbar button { background: none; border: none; font-size: 1.2rem; color: var(--text-main); cursor: pointer; margin-right: 15px; outline: none; }
         .toolbar button:hover { color: var(--primary-color); }
 
-        /* لوحة المعلومات (التاريخ، الصلاة، الإحصائيات) */
         .dashboard { max-width: 800px; margin: 20px auto; padding: 0 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
         .info-card { background: var(--card-bg); padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px var(--card-shadow); border: 1px solid var(--border-color); }
         .info-card h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--text-muted); }
@@ -66,7 +65,6 @@
         .count-btn:active { transform: scale(0.95); }
         .count-btn.completed { background-color: var(--text-muted); box-shadow: none; pointer-events: none; }
 
-        /* ستايل المسبحة الإلكترونية */
         .rosary-container { text-align: center; padding: 30px 10px; }
         .rosary-display { font-size: 4rem; font-weight: bold; color: var(--primary-color); margin: 20px 0; font-family: monospace; }
         .rosary-btn { width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(145deg, var(--primary-color), var(--secondary-color)); border: none; color: white; font-size: 2rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; margin: 0 auto; user-select: none; }
@@ -107,11 +105,13 @@
 
     <div class="nav-container" id="navMenu">
         <button class="nav-btn active-btn" onclick="showSection('athan', this)">مواقيت الصلاة</button>
-        <button class="nav-btn" onclick="showSection('rosary', this)">المسبحة الإلكترونية <i class="fa-solid fa-fingerprint"></i></button>
+        <button class="nav-btn" onclick="showSection('rosary', this)">المسبحة <i class="fa-solid fa-fingerprint"></i></button>
         <button class="nav-btn" onclick="showSection('morning', this)">أذكار الصباح</button>
         <button class="nav-btn" onclick="showSection('evening', this)">أذكار المساء</button>
         <button class="nav-btn" onclick="showSection('sleep', this)">النوم</button>
+        <button class="nav-btn" onclick="showSection('prayer', this)">بعد الصلاة</button>
         <button class="nav-btn" onclick="showSection('quranic', this)">أدعية قرآنية</button>
+        <button class="nav-btn" onclick="showSection('prophetic', this)">أدعية نبوية</button>
     </div>
 
     <main id="main-content">
@@ -143,31 +143,64 @@
 
         <section id="morning" class="section">
             <h2 class="section-title">أذكار الصباح</h2>
-            
             <div class="dhikr-card" data-max="1">
-                <p class="dhikr-text">الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السماوات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه...</p>
-                <span class="source">(آية الكرسي - من قالها حين يصبح أجير من الجن)</span>
-                <div class="progress-bar-container"><div class="progress-bar" style="width: 0%;"></div></div>
+                <p class="dhikr-text">الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السماوات وما في الأرض من ذا الذي يشفع عنده إلا بإذنه يعلم ما بين أيديهم وما خلفهم ولا يحيطون بشيء من علمه إلا بما شاء وسع كرسيه السماوات والأرض ولا يئوده حفظهما وهو العلي العظيم</p>
+                <span class="source">(آية الكرسي)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
                 <div class="card-footer">
                     <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
                     <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
                 </div>
             </div>
-
             <div class="dhikr-card" data-max="3">
                 <p class="dhikr-text">قراءة سورة الإخلاص، وسورة الفلق، وسورة الناس</p>
                 <span class="source">(رواه أبو داود والترمذي)</span>
-                <div class="progress-bar-container"><div class="progress-bar" style="width: 0%;"></div></div>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
                 <div class="card-footer">
                     <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
                     <button class="count-btn" onclick="decrement(this, 3)">التكرار: 3</button>
                 </div>
             </div>
-
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">أصبحنا وأصبح الملك لله والحمد لله لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير رب أسألك خير ما في هذا اليوم وخير ما بعده وأعوذ بك من شر ما في هذا اليوم وشر ما بعده رب أعوذ بك من الكسل وسوء الكبر رب أعوذ بك من عذاب في النار وعذاب في القبر</p>
+                <span class="source">(رواه مسلم)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت أعوذ بك من شر ما صنعت أبوء لك بنعمتك علي وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت</p>
+                <span class="source">(سيد الاستغفار - رواه البخاري)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="3">
+                <p class="dhikr-text">بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم</p>
+                <span class="source">(رواه أبو داود والترمذي)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 3)">التكرار: 3</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="3">
+                <p class="dhikr-text">رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا</p>
+                <span class="source">(رواه أبو داود والترمذي)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 3)">التكرار: 3</button>
+                </div>
+            </div>
             <div class="dhikr-card" data-max="100">
                 <p class="dhikr-text">سبحان الله وبحمده</p>
                 <span class="source">(رواه مسلم)</span>
-                <div class="progress-bar-container"><div class="progress-bar" style="width: 0%;"></div></div>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
                 <div class="card-footer">
                     <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
                     <button class="count-btn" onclick="decrement(this, 100)">التكرار: 100</button>
@@ -177,17 +210,126 @@
 
         <section id="evening" class="section">
             <h2 class="section-title">أذكار المساء</h2>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">الله لا إله إلا هو الحي القيوم لا تأخذه سنة ولا نوم له ما في السماوات وما في الأرض...</p>
+                <span class="source">(آية الكرسي)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
             <div class="dhikr-card" data-max="3">
                 <p class="dhikr-text">قراءة سورة الإخلاص، وسورة الفلق، وسورة الناس</p>
-                <div class="progress-bar-container"><div class="progress-bar" style="width: 0%;"></div></div>
+                <span class="source">(رواه أبو داود والترمذي)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
                 <div class="card-footer">
                     <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
                     <button class="count-btn" onclick="decrement(this, 3)">التكرار: 3</button>
                 </div>
             </div>
             <div class="dhikr-card" data-max="1">
-                <p class="dhikr-text">أمسينا وأمسى الملك لله والحمد لله لا إله إلا الله وحده لا شريك له...</p>
-                <div class="progress-bar-container"><div class="progress-bar" style="width: 0%;"></div></div>
+                <p class="dhikr-text">أمسينا وأمسى الملك لله والحمد لله لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير رب أسألك خير ما في هذه الليلة وخير ما بعدها وأعوذ بك من شر ما في هذه الليلة وشر ما بعدها رب أعوذ بك من الكسل وسوء الكبر رب أعوذ بك من عذاب في النار وعذاب في القبر</p>
+                <span class="source">(رواه مسلم)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير</p>
+                <span class="source">(رواه الترمذي)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="3">
+                <p class="dhikr-text">بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم</p>
+                <span class="source">(رواه أبو داود والترمذي)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 3)">التكرار: 3</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="sleep" class="section">
+            <h2 class="section-title">أذكار والقرآن عند النوم</h2>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">قراءة آية الكرسي</p>
+                <span class="source">(رواه البخاري)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">آمن الرسول بما أنزل إليه من ربه والمؤمنون كل آمن بالله وملائكته وكتبه ورسله لا نفرق بين أحد من رسله وقالوا سمعنا وأطعنا غفرانك ربنا وإليك المصير لا يكلف الله نفسا إلا وسعها لها ما كسبت وعليها ما اكتسبت ربنا لا تؤاخذنا إن نسينا أو أخطأنا ربنا ولا تحمل علينا إصرا كما حملته على الذين من قبلنا ربنا ولا تحملنا ما لا طاقة لنا به واعف عنا واغفر لنا وارحمنا أنت مولانا فانصرنا على القوم الكافرين</p>
+                <span class="source">(أواخر سورة البقرة - رواه البخاري ومسلم)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">باسمك ربي وضعت جنبي وبك أرفعه إن أمسكت نفسي فارحمها وإن أرسلتها فاحفظها بما تحفظ به عبادك الصالحين</p>
+                <span class="source">(رواه البخاري ومسلم)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="3">
+                <p class="dhikr-text">اللهم قني عذابك يوم تبعث عبادك</p>
+                <span class="source">(رواه أبو داود وصححه الألباني)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 3)">التكرار: 3</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">باسمك اللهم أموت وأحيا</p>
+                <span class="source">(رواه البخاري)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="prayer" class="section">
+            <h2 class="section-title">أذكار دبر الصلوات المكتوبة</h2>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">أستغفر الله، أستغفر الله، أستغفر الله، اللهم أنت السلام ومنك السلام تباركت ذا الجلال والإكرام</p>
+                <span class="source">(رواه مسلم)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير اللهم لا مانع لما أعطيت ولا معطي لما منعت ولا ينفع ذا الجد منك الجد</p>
+                <span class="source">(رواه البخاري ومسلم)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
+                <div class="card-footer">
+                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
+                    <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
+                </div>
+            </div>
+            <div class="dhikr-card" data-max="1">
+                <p class="dhikr-text">سبحان الله (33)، والحمد لله (33)، والله أكبر (33)، وقال تمام المئة: لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير</p>
+                <span class="source">(من قالها غفرت خطاياه - رواه مسلم)</span>
+                <div class="progress-bar-container"><div class="progress-bar"></div></div>
                 <div class="card-footer">
                     <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
                     <button class="count-btn" onclick="decrement(this, 1)">التكرار: 1</button>
@@ -197,21 +339,51 @@
 
         <section id="quranic" class="section">
             <h2 class="section-title">أدعية من القرآن الكريم</h2>
-            <div class="dhikr-card" data-max="1">
-                <p class="dhikr-text">ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار</p>
-                <span class="source">(البقرة: 201)</span>
-                <div class="progress-bar-container"><div class="progress-bar"></div></div>
-                <div class="card-footer">
-                    <div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div>
-                    <button class="count-btn" onclick="decrement(this, 1)">دعاء</button>
-                </div>
-            </div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اهدنا الصراط المستقيم</p><span class="source">(الفاتحة: 6)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا تقبل منا إنك أنت السميع العليم</p><span class="source">(البقرة: 127)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار</p><span class="source">(البقرة: 201)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا أفرغ علينا صبرا وثبت أقدامنا وانصرنا على القوم الكافرين</p><span class="source">(البقرة: 250)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا لا تؤاخذنا إن نسينا أو أخطأنا ربنا ولا تحمل علينا إصرا كما حملته على الذين من قبلنا ربنا ولا تحملنا ما لا طاقة لنا به واعف عنا واغفر لنا وارحمنا أنت مولانا فانصرنا على القوم الكافرين</p><span class="source">(البقرة: 286)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا لا تزغ قلوبنا بعد إذ هديتنا وهب لنا من لدنك رحمة إنك أنت الوهاب</p><span class="source">(آل عمران: 8)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا إننا آمنا فاغفر لنا ذنوبنا وقنا عذاب النار</p><span class="source">(آل عمران: 16)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب هب لي من لدنك ذرية طيبة إنك سميع الدعاء</p><span class="source">(آل عمران: 38)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا اغفر لنا ذنوبنا وإسرافنا في أمرنا وثبت أقدامنا وانصرنا على القوم الكافرين</p><span class="source">(آل عمران: 147)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا ظلمنا أنفسنا وإن لم تغفر لنا وترحمنا لنكونن من الخاسرين</p><span class="source">(الأعراف: 23)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب اجعلني مقيم الصلاة ومن ذريتي ربنا وتقبل دعاء</p><span class="source">(إبراهيم: 40)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا اغفر لي ولوالدي وللمؤمنين يوم يقوم الحساب</p><span class="source">(إبراهيم: 41)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب ارحمهما كما ربياني صغيرا</p><span class="source">(الإسراء: 24)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب أدخلني مدخل صدق وأخرجني مخرج صدق واجعل لي من لدنك سلطانا نصيرا</p><span class="source">(الإسراء: 80)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا آتنا من لدنك رحمة وهيئ لنا من أمرنا رشدا</p><span class="source">(الكهف: 10)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب اشرح لي صدري ويسر لي أمري</p><span class="source">(طه: 25-26)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب زدني علما</p><span class="source">(طه: 114)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">لا إله إلا أنت سبحانك إني كنت من الظالمين</p><span class="source">(الأنبياء: 87)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب لا تذرني فردا وأنت خير الوارثين</p><span class="source">(الأنبياء: 89)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب أنزلني منزلا مباركا وأنت خير المنزلين</p><span class="source">(المؤمنون: 29)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب أعوذ بك من همزات الشياطين وأعوذ بك رب أن يحضرون</p><span class="source">(المؤمنون: 97-98)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا اصرف عنا عذاب جهنم إن عذابها كان غراما</p><span class="source">(الفرقان: 65)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا هب لنا من أزواجنا وذرياتنا قرة أعين واجعلنا للمتقين إماما</p><span class="source">(الفرقان: 74)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب هب لي حكما وألحقني بالصالحين واجعل لي لسان صدق في الآخرين واجعلني من ورثة جنة النعيم</p><span class="source">(الشعراء: 83-85)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب أوزعني أن أشكر نعمتك التي أنعمت علي وعلى والدي وأن أعمل صالحا ترضاه وأدخلني برحمتك في عبادك الصالحين</p><span class="source">(النمل: 19)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">رب إني لما أنزلت إلي من خير فقير</p><span class="source">(القصص: 24)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">ربنا اغفر لنا ولإخواننا الذين سبقونا بالإيمان ولا تجعل في قلوبنا غلا للذين آمنوا ربنا إنك رؤوف رحيم</p><span class="source">(الحشر: 10)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
         </section>
 
-        </main>
+        <section id="prophetic" class="section">
+            <h2 class="section-title">أدعية نبوية صحيحة (جوامع الكلم)</h2>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم إني أسألك الهدى والتقى والعفاف والغنى</p><span class="source">(رواه مسلم)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">يا مقلب القلوب ثبت قلبي على دينك</p><span class="source">(رواه الترمذي وصححه الألباني)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم إني أسألك العفو والعافية في الدنيا والآخرة</p><span class="source">(رواه أبو داود وصححه الألباني)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم إني أعوذ بك من زوال نعمتك وتحول عافيتك وفجاءة نقمتك وجميع سخطك</p><span class="source">(رواه مسلم)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم أصلح لي ديني الذي هو عصمة أمري وأصلح لي دنياي التي فيها معاشي وأصلح لي آخرتي التي فيها معادي واجعل الحياة زيادة لي في كل خير واجعل الموت راحة لي من كل شر</p><span class="source">(رواه مسلم)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم إني أعوذ بك من الهم والحزن والعجز والكسل والبخل والجبن وضلع الدين وغلبة الرجال</p><span class="source">(رواه البخاري)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم اغفر لي خطيئتي وجهلي وإسرافي في أمري وما أنت أعلم به مني اللهم اغفر لي جدي وهزلي وخطئي وعمدي وكل ذلك عندي</p><span class="source">(رواه البخاري ومسلم)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم إني أعوذ بك من شر ما عملت ومن شر ما لم أعمل</p><span class="source">(رواه مسلم)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم إني أسألك من الخير كله عاجله وآجله ما علمت منه وما لم أعلم وأعوذ بك من الشر كله عاجله وآجله ما علمت منه وما لم أعلم اللهم إني أسألك من خير ما سألك عبدك ونبيك وأعوذ بك من شر ما عاذ به عبدك ونبيك</p><span class="source">(رواه ابن ماجه وصححه الألباني)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+            <div class="dhikr-card" data-max="1"><p class="dhikr-text">اللهم أعني على ذكرك وشكرك وحسن عبادتك</p><span class="source">(رواه أبو داود وصححه الألباني)</span><div class="progress-bar-container"><div class="progress-bar"></div></div><div class="card-footer"><div class="card-actions"><button onclick="copyText(this)"><i class="fa-regular fa-copy"></i></button></div><button class="count-btn" onclick="decrement(this, 1)">دعاء</button></div></div>
+        </section>
+    </main>
 
     <script>
-        // --- إدارة الإحصائيات اليومية ---
         let dailyStats = 0;
         const todayStr = new Date().toDateString();
 
@@ -233,17 +405,12 @@
             document.getElementById('daily-stats').innerText = dailyStats;
         }
 
-        // --- المسبحة الإلكترونية ---
         let rosaryCount = 0;
         function incrementRosary() {
             rosaryCount++;
             document.getElementById('rosary-counter').innerText = rosaryCount;
-            addStat(); // زيادة الإحصائيات العامة
-            
-            // اهتزاز خفيف
+            addStat(); 
             if(navigator.vibrate) navigator.vibrate(30);
-            
-            // اهتزاز أقوى كل 33 أو 100 تسبيحة
             if(rosaryCount % 33 === 0 || rosaryCount % 100 === 0) {
                 if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
             }
@@ -256,7 +423,6 @@
             }
         }
 
-        // --- إعدادات السمة والخط ---
         let currentFontSize = 1.3;
         function toggleTheme() {
             const htmlTag = document.documentElement;
@@ -285,7 +451,6 @@
             }
         }
 
-        // --- التنقل والعدادات ---
         function showSection(sectionId, btnElement) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
@@ -308,7 +473,7 @@
             if (currentCount > 0) {
                 currentCount--;
                 btn.innerText = `التكرار: ${currentCount}`;
-                addStat(); // إضافة للعداد اليومي
+                addStat(); 
                 
                 let progressPercent = ((maxCount - currentCount) / maxCount) * 100;
                 progressBar.style.width = `${progressPercent}%`;
@@ -332,7 +497,6 @@
             });
         }
 
-        // --- مواقيت الصلاة ---
         function getUserLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -356,7 +520,6 @@
                 
                 let now = new Date();
                 let currentTime = now.getHours() * 60 + now.getMinutes();
-                let nextPrayerName = "الفجر غداً";
                 let foundNext = false;
 
                 for (let [key, name] of Object.entries(prayers)) {
