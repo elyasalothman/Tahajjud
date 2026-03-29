@@ -1,4 +1,4 @@
-// Rafiq Muslim v0.6.0 - App-like Layout & Smart Cache
+// Rafiq Muslim v0.6.1 - Fit layout & Fixes
 const API_BASE='https://api.aladhan.com/v1';
 const KAABA={lat:21.4225,lon:39.8262};
 const BDC_REVERSE='https://api-bdc.net/data/reverse-geocode-client';
@@ -7,7 +7,7 @@ const LS = (k,v) => { try { if(v===undefined) return localStorage.getItem(k); lo
 
 let CFG=null, nextTimer=null; let loaded={adhkar:false,resources:false,learning:false};
 let rawAdhkarData=null; let showTashkeel=LS('tashkeel')!=='false'; 
-let currentFontSize = parseFloat(LS('fontSize')); if(isNaN(currentFontSize)) currentFontSize = 1.5;
+let currentFontSize = parseFloat(LS('fontSize')); if(isNaN(currentFontSize)) currentFontSize = 1.4; // تناسب الشاشة أكثر
 
 const TASBEEH_PHRASES=[{"name": "سُبْحَانَ اللَّهِ", "target": 33}, {"name": "الْحَمْدُ لِلَّهِ", "target": 33}, {"name": "اللَّهُ أَكْبَرُ", "target": 34}, {"name": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", "target": 100}, {"name": "لَا إِلَهَ إِلَّا اللَّهُ", "target": 100}, {"name": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ", "target": 100}, {"name": "أَسْتَغْفِرُ اللَّهَ", "target": 100}];
 
@@ -201,7 +201,6 @@ async function loadAdhkar(){
   pills.innerHTML=''; tabs.forEach(t=>{const b=document.createElement('button'); b.textContent=t.label; b.dataset.key=t.key; b.addEventListener('click',()=>activate(t.key)); pills.appendChild(b);}); activate('morning');
 }
 
-// دالة جلب الفائدة الذكية (الإنترنت أولاً، ثم المخزون)
 async function loadDailyBenefit() {
   const fallback = [
     "من لزم الاستغفار جعل الله له من كل هم فرجاً، ومن كل ضيق مخرجاً.",
