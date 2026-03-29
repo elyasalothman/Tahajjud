@@ -1,4 +1,4 @@
-// Rafiq Muslim v0.2.2 build 20260329-095651
+// Rafiq Muslim v0.2.3
 const API_BASE='https://api.aladhan.com/v1';
 const KAABA={lat:21.4225,lon:39.8262};
 const BDC_REVERSE='https://api-bdc.net/data/reverse-geocode-client';
@@ -17,22 +17,18 @@ function computeLastThird(m,f){const magh=isoToDate(m), fajr=isoToDate(f); let n
 function bearing(lat1,lon1,lat2,lon2){const φ1=toRad(lat1),φ2=toRad(lat2),λ1=toRad(lon1),λ2=toRad(lon2); const y=Math.sin(λ2-λ1)*Math.cos(φ2),x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1); return normalize360(toDeg(Math.atan2(y,x)));}
 async function fetchTimingsByCoords(date,lat,lon){const ds=dateToApi(date); const u=`${API_BASE}/timings/${ds}?latitude=${lat}&longitude=${lon}&method=${CFG.calculation.method}&school=${CFG.calculation.school}&iso8601=true`; const r=await fetch(u); const j=await r.json(); if(j.code!==200) throw new Error('API'); return j.data;}
 async function fetchTimingsByCity(date,city,country){const ds=dateToApi(date); const u=`${API_BASE}/timingsByCity/${ds}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=${CFG.calculation.method}&school=${CFG.calculation.school}&iso8601=true`; const r=await fetch(u); const j=await r.json(); if(j.code!==200) throw new Error('API'); return j.data;}
-function setTheme(t){document.documentElement.setAttribute('data-theme',t); LS('theme',t)}
+
 function initTheme() {
   const savedTheme = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
-  
   const toggleBtn = document.querySelector('#toggleTheme');
   if(toggleBtn) {
-    // وضع الأيقونة المناسبة عند فتح الموقع
     toggleBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-    
     toggleBtn.addEventListener('click', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme');
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
-      // تغيير الأيقونة مع الضغطة
       toggleBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
     });
   }
@@ -41,8 +37,6 @@ function initTheme() {
 function initScheme() {
   const savedScheme = localStorage.getItem('scheme') || 'classic';
   document.documentElement.setAttribute('data-scheme', savedScheme);
-  
-  // تفعيل أزرار الألوان الدائرية
   document.querySelectorAll('.color-dot').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const val = e.target.getAttribute('data-val');
@@ -51,8 +45,7 @@ function initScheme() {
     });
   });
 }
-function setScheme(s){document.documentElement.setAttribute('data-scheme',s); LS('scheme',s)}
-function initScheme(){const s=LS('scheme')||'brown'; setScheme(s); const sel=qs('#schemeSelect'); if(sel){sel.value=s; sel.addEventListener('change',()=>setScheme(sel.value));}}
+
 function showSection(id){qsa('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.target===id)); qsa('.section').forEach(s=>s.classList.toggle('active',s.id===id));}
 function initNav(){qsa('.nav button').forEach(btn=>btn.addEventListener('click',async()=>{const id=btn.dataset.target; showSection(id); if(id==='adhkar'&&!loaded.adhkar){loaded.adhkar=true; await loadAdhkar();} if(id==='resources'&&!loaded.resources){loaded.resources=true; await loadResources();} if(id==='learning'&&!loaded.learning){loaded.learning=true; await loadLearning();} window.scrollTo({top:0,behavior:'smooth'});}));}
 function renderFooterVersion(){setText('footerVersion',`الإصدار ${CFG.version}`); setText('footerBrand','رفيق المسلم');}
