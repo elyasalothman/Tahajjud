@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1a1410"/>
   <link rel="manifest" href="./manifest.webmanifest"/>
   <link rel="icon" href="./assets/img/icon-192.png"/>
-  <link rel="stylesheet" href="./assets/css/styles.css?v=0.2.4"/>
+  <link rel="stylesheet" href="./assets/css/styles.css?v=0.2.5"/>
   <title>رفيق المسلم</title>
 </head>
 <body>
@@ -35,29 +35,12 @@
   </div>
 
   <div class="card">
-    <div class="nav">
-      <button class="active" data-target="times">أوقات الصلاة</button>
-      <button data-target="qibla">القبلة</button>
-      <button data-target="adhkar">الأذكار</button>
-      <button data-target="tasbeeh">تسبيح</button>
-      <button data-target="learning">تعلم</button>
-      <button data-target="resources">روابط مفيدة</button>
-    </div>
-
     <section id="times" class="section active">
-      <div class="row">
-        <button class="btn" id="useLocation">تحديد موقعي</button>
-        <span class="badge" id="locChip" style="display:none">الموقع مفعل ✓</span>
-        <div id="cityControls" class="row" style="margin:0">
-          <select id="citySelect"><option value="">— اختر مدينة —</option></select>
-          <button class="btn secondary" id="useCity">استخدام المدينة</button>
-        </div>
+      <div class="row" style="display: flex; flex-wrap: nowrap; gap: 8px;">
+        <button class="btn" id="useLocation" title="تحديد موقعي التلقائي" style="padding: 0 16px; font-size: 1.4rem;">📍</button>
+        <select id="citySelect" style="flex: 1;"><option value="">— اختر مدينة يدوياً —</option></select>
       </div>
-      <div class="small" id="ptStatus"></div>
-
-      <div class="row" style="margin-top:10px">
-        <span class="badge">طريقة الحساب: أم القرى</span>
-      </div>
+      <div class="small" id="ptStatus" style="margin-top: 6px;"></div>
 
       <div class="table-wrap">
         <table class="table" style="margin-top:10px">
@@ -132,9 +115,18 @@
 
 <div class="normal-footer">
   <div class="footer-brand" id="footerBrand">رفيق المسلم</div>
-  <div class="footer-version" id="footerVersion">الإصدار 0.2.4</div>
+  <div class="footer-version" id="footerVersion">الإصدار 0.2.5</div>
 </div>
 
-<script src="./assets/js/app.js?v=0.2.4" type="module"></script>
+<nav class="bottom-nav">
+  <button class="active" data-target="times" title="أوقات الصلاة">🕌</button>
+  <button data-target="qibla" title="القبلة">🧭</button>
+  <button data-target="adhkar" title="الأذكار">🤲</button>
+  <button data-target="tasbeeh" title="تسبيح">📿</button>
+  <button data-target="learning" title="تعلم">📚</button>
+  <button data-target="resources" title="روابط">🔗</button>
+</nav>
+
+<script src="./assets/js/app.js?v=0.2.5" type="module"></script>
 </body>
 </html>
