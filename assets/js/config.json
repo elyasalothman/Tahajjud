@@ -1,6 +1,6 @@
 {
   "version": "0.1",
-  "build": "20260329-074252",
+  "build": "20260329-083712",
   "calculation": {
     "method": 4,
     "school": 0
@@ -12,6 +12,7 @@
   },
   "defaultCity": {
     "city": "Riyadh",
-    "country": "SA"
+    "country": "SA",
+    "label": "الرياض"
   }
 }

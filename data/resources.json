@@ -6,22 +6,12 @@
         {
           "title": "Quran.com",
           "url": "https://quran.com/",
-          "desc": "قراءة القرآن مع تلاوات وترجمات."
+          "desc": "قراءة القرآن مع التلاوات والترجمات."
         },
         {
-          "title": "مشروع المصحف الإلكتروني (آيات) – جامعة الملك سعود",
+          "title": "مشروع المصحف الإلكتروني (آيات)",
           "url": "https://quran.ksu.edu.sa/",
           "desc": "مصحف وتلاوات وتفاسير وبحث."
-        },
-        {
-          "title": "متصفح القرآن – مجمع الملك فهد",
-          "url": "https://quranweb.moia.gov.sa/",
-          "desc": "تصفح مصحف المدينة عبر الويب."
-        },
-        {
-          "title": "QuranEnc",
-          "url": "https://quranenc.com/",
-          "desc": "ترجمات موثوقة لمعاني القرآن."
         }
       ]
     },
@@ -36,27 +26,7 @@
         {
           "title": "Sunnah.com",
           "url": "https://sunnah.com/",
-          "desc": "كتب الحديث مع بحث."
-        }
-      ]
-    },
-    {
-      "group": "الفتاوى والعلم الشرعي",
-      "items": [
-        {
-          "title": "موقع ابن باز",
-          "url": "https://binbaz.org.sa/",
-          "desc": "فتاوى ودروس."
-        },
-        {
-          "title": "الإسلام سؤال وجواب",
-          "url": "https://islamqa.info/ar",
-          "desc": "إجابات مؤصلة."
-        },
-        {
-          "title": "إسلام ويب – الفتاوى",
-          "url": "https://www.islamweb.org/ar/fatawa/index.php",
-          "desc": "أرشيف واسع."
+          "desc": "كتب الحديث مع البحث."
         }
       ]
     }
