@@ -1,4 +1,4 @@
-// Rafiq Muslim v0.6.3 - Official Release
+// Rafiq Muslim v0.6.3 - Full Fixed & Official
 const API_BASE='https://api.aladhan.com/v1';
 const KAABA={lat:21.4225,lon:39.8262};
 const BDC_REVERSE='https://api-bdc.net/data/reverse-geocode-client';
@@ -29,7 +29,13 @@ function renderHijri(){
   }catch(e){setText('hijri','—')}
 }
 
+function translatePrayer(k){return ({Fajr:'الفجر',Sunrise:'الشروق',Dhuhr:'الظهر',Asr:'العصر',Maghrib:'المغرب',Isha:'العشاء'})[k]||k;}
+function computeDuha(s,d){return {start:new Date(isoToDate(s).getTime()+CFG.duha.startOffsetAfterSunriseMin*60000), end:new Date(isoToDate(d).getTime()-CFG.duha.endOffsetBeforeDhuhrMin*60000)}}
+function computeLastThird(m,f){const magh=isoToDate(m), fajr=isoToDate(f); let night=fajr-magh; if(night<=0) night+=86400000; const third=night/3; return {start:new Date(fajr.getTime()-third), end:fajr}}
 function bearing(lat1,lon1,lat2,lon2){const φ1=toRad(lat1),φ2=toRad(lat2),λ1=toRad(lon1),λ2=toRad(lon2); const y=Math.sin(λ2-λ1)*Math.cos(φ2),x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(λ2-λ1); return normalize360(toDeg(Math.atan2(y,x)));}
+
+async function fetchTimingsByCoords(date,lat,lon, methodOverride){const m = methodOverride || CFG.calculation.method; const ds=dateToApi(date); const u=`${API_BASE}/timings/${ds}?latitude=${lat}&longitude=${lon}&method=${m}&school=${CFG.calculation.school}&iso8601=true`; const r=await fetch(u); const j=await r.json(); return j.data;}
+async function fetchTimingsByCity(date,city,country, methodOverride){const m = methodOverride || CFG.calculation.method; const ds=dateToApi(date); const u=`${API_BASE}/timingsByCity/${ds}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=${m}&school=${CFG.calculation.school}&iso8601=true`; const r=await fetch(u); const j=await r.json(); return j.data;}
 
 function initScheme() {
   const s = LS('scheme') || 'brown'; document.documentElement.setAttribute('data-scheme', s);
@@ -61,39 +67,24 @@ function initNav(){
   }));
 }
 
-// ذكاء البوصلة المطور - دقة ثلاثية + نصيحة رقم 8
 function setupCompass(){
   const needle=qs('#needle'), accBox=qs('#compassAccuracyBox'); if(!needle || !accBox) return; 
   let ema=null; function delta(a,b){return (b-a+540)%360-180} 
-  
   function updateAccUI(acc) {
     accBox.className = 'accuracy-box';
     if(acc <= 15) { accBox.textContent = 'دقة عالية ✓'; accBox.classList.add('acc-high'); }
     else if(acc <= 45) { accBox.textContent = 'دقة متوسطة'; accBox.classList.add('acc-med'); }
     else { accBox.textContent = 'دقة سيئة! يرجى تحريك الجوال بشكل رقم 8 🔄'; accBox.classList.add('acc-low'); }
   }
-
   function onOri(ev){
-    let heading=null; 
-    if(typeof ev.webkitCompassHeading==='number' && ev.webkitCompassHeading>=0){
-      heading=ev.webkitCompassHeading; 
-      if(typeof ev.webkitCompassAccuracy==='number') updateAccUI(ev.webkitCompassAccuracy);
-    } else if(typeof ev.alpha==='number'){
-      heading=360-ev.alpha; accBox.textContent='دقة تقريبية (تحتاج معايرة)';
-    } 
-    if(heading==null) return; 
-    const q=parseFloat(LS('qiblaBearing')||'0')||0; 
-    if(ema==null) ema=heading; ema=normalize360(ema+delta(ema,heading)*0.2); 
-    needle.style.transform=`translate(-50%,-100%) rotate(${normalize360(q-ema)}deg)`;
+    let heading=null; if(typeof ev.webkitCompassHeading==='number' && ev.webkitCompassHeading>=0){ heading=ev.webkitCompassHeading; if(typeof ev.webkitCompassAccuracy==='number') updateAccUI(ev.webkitCompassAccuracy); } 
+    else if(typeof ev.alpha==='number'){ heading=360-ev.alpha; accBox.textContent='دقة تقريبية (تحتاج معايرة)'; } 
+    if(heading==null) return; const q=parseFloat(LS('qiblaBearing')||'0')||0; if(ema==null) ema=heading; 
+    ema=normalize360(ema+delta(ema,heading)*0.2); needle.style.transform=`translate(-50%,-100%) rotate(${normalize360(q-ema)}deg)`;
   } 
-
   qs('#enableCompass')?.addEventListener('click',async()=>{
-    try{
-      if(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission==='function'){
-        const p=await DeviceOrientationEvent.requestPermission(); if(p!=='granted') return;
-      } 
-      window.addEventListener('deviceorientation',onOri,true); setText('compassStatus','تم تفعيل الحساسات');
-    }catch(e){setText('compassStatus','تعذّر الوصول للحساسات');}
+    try{ if(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission==='function'){ const p=await DeviceOrientationEvent.requestPermission(); if(p!=='granted') return; } 
+    window.addEventListener('deviceorientation',onOri,true); setText('compassStatus','تم تفعيل الحساسات'); }catch(e){setText('compassStatus','تعذّر الوصول للحساسات');}
   });
 }
 
@@ -112,20 +103,52 @@ function setupTasbeeh(){
   render();
 }
 
-// باقي دوال الأوقات والأذكار (نفس المنطق القوي السابق) يتم استدعاؤها هنا
-// ... (تم اختصارها للمساحة لكنها تعمل بكامل كفاءتها في الإصدار المرفوع)
+function dayKey(){return new Date().toDateString()}
+function updateGlobalProgress(list, keyPrefix) {
+  const bar = qs('#globalAdhkarProgress'); if(!bar) return;
+  const completed = list.filter((it, i) => { const k=`dhikr:${keyPrefix}:${i}:${dayKey()}`; return typeof it.repeat === 'number' ? LS(k) === '0' : true; }).length;
+  bar.style.width = Math.round((completed / list.length) * 100) + '%';
+}
+
+function renderPager(container,list,keyPrefix){
+  if(!list) return; updateGlobalProgress(list, keyPrefix);
+  let index=parseInt(LS(`pager:${keyPrefix}:index`)||'0',10);
+  const host=document.createElement('div'); host.className='pager-wrap'; host.innerHTML=`<div class="pager-index"></div><div class="pager-card"></div><div class="pager-controls"><button class="btn secondary prev">السابق</button><button class="btn next">التالي</button></div>`;
+  container.appendChild(host);
+  function update(){
+    const it=list[index]; const k=`dhikr:${keyPrefix}:${index}:${dayKey()}`;
+    let rem=LS(k); rem=rem==null?(typeof it.repeat==='number'?it.repeat:0):parseInt(rem,10);
+    const displayText = showTashkeel ? it.text : (it.text||'').replace(/[\u064B-\u065F\u0640]/g, '');
+    host.querySelector('.pager-index').textContent=`${index+1} / ${list.length}`;
+    host.querySelector('.pager-card').innerHTML=`<p class="dhikr-text">${displayText}</p><div class="actions"><button class="btn tiny do">${rem===0?'تم':rem}</button></div>`;
+    host.querySelector('.do').addEventListener('click',()=>{ if(rem>0){rem--; LS(k,String(rem)); update(); updateGlobalProgress(list, keyPrefix); haptic(10);} });
+  }
+  host.querySelector('.prev').addEventListener('click',()=>{if(index>0){index--; update();}});
+  host.querySelector('.next').addEventListener('click',()=>{if(index<list.length-1){index++; update();}});
+  update();
+}
+
+async function loadAdhkar(){
+  rawAdhkarData = await fetchJSON('./data/adhkar.json', {});
+  const pills=qs('#adhkarPills'); pills.innerHTML='';
+  ['morning','evening','afterPrayer'].forEach(k=>{ const b=document.createElement('button'); b.textContent=k; b.addEventListener('click',()=>{ renderDhikrList(qs('#adhkarContainer'),rawAdhkarData[k],k); }); pills.appendChild(b); });
+}
+
+function renderDhikrList(c,l,k){c.innerHTML=''; renderPager(c,l,k);}
 
 async function loadPrayerTimes(forceCity=false){
-  const today=new Date(); const todayStr=dateToApi(today);
-  // منطق جلب الأوقات المعتاد...
-  setText('ptStatus','جاري تحديث الأوقات...');
-  // (كود جلب البيانات من API الأذان...)
-  setText('ptStatus','');
+  const today=new Date(); const c = CFG.defaultCity;
+  const data = await fetchTimingsByCity(today, c.city, c.country);
+  const T = data.timings;
+  setText('t_fajr_s', formatTime12h(isoToDate(T.Fajr)));
+  setText('t_dhuhr_s', formatTime12h(isoToDate(T.Dhuhr)));
+  setText('t_asr_s', formatTime12h(isoToDate(T.Asr)));
+  setText('t_maghrib_s', formatTime12h(isoToDate(T.Maghrib)));
+  setText('t_isha_s', formatTime12h(isoToDate(T.Isha)));
 }
 
 async function init(){
-  const fallbackConfig = { calculation: { method: 4, school: 0 }, duha: { startOffsetAfterSunriseMin: 15, endOffsetBeforeDhuhrMin: 10 }, defaultCity: { label: 'مكة المكرمة', city: 'Makkah', country: 'SA' } };
-  CFG = await fetchJSON('./assets/js/config.json', fallbackConfig); 
+  CFG = await fetchJSON('./assets/js/config.json', { calculation: { method: 4, school: 0 }, defaultCity: { city: 'Makkah', country: 'SA' } }); 
   initScheme(); initUI(); initNav(); renderHijri(); setupCompass(); setupTasbeeh();
   await loadPrayerTimes(false);
 }
