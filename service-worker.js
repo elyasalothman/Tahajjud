@@ -1,1 +1,47 @@
-const CACHE= 'rafiq-v023-update';const ASSETS=['./','./index.html','./manifest.webmanifest','./service-worker.js','./assets/css/styles.css','./assets/js/app.js','./assets/js/config.json','./assets/img/logo.svg','./assets/img/icon-192.png','./assets/img/icon-512.png','./data/adhkar.json','./data/resources.json','./data/learning.json'];self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>clients.claim()))});self.addEventListener('message',e=>{if(e.data&&e.data.type==='SKIP_WAITING')self.skipWaiting()});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('./index.html'))))});
+const CACHE_NAME = 'rafiq-cache-v0.2.3';
+const ASSETS_TO_CACHE = [
+  './',
+  './index.html',
+  './assets/css/styles.css',
+  './assets/js/app.js',
+  './assets/js/config.json'
+];
+
+self.addEventListener('install', (event) => {
+  // إجبار المتصفح على تثبيت التحديث فوراً دون انتظار
+  self.skipWaiting(); 
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          // مسح أي نسخة قديمة غير النسخة الحالية 0.2.3
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
