@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ar" dir="rtl" data-theme="dark">
+<html lang="ar" dir="rtl" data-theme="dark" data-scheme="brown">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="theme-color" content="#07111f"/>
+  <meta name="theme-color" content="#1a1410"/>
   <link rel="manifest" href="./manifest.webmanifest"/>
   <link rel="icon" href="./assets/img/icon-192.png"/>
   <link rel="stylesheet" href="./assets/css/styles.css"/>
@@ -13,7 +13,15 @@
 <header>
   <div class="header-wrap">
     <div class="brand"><img src="./assets/img/logo.svg" alt=""/><span>رفيق المسلم</span></div>
-    <div class="toolbar"><button id="toggleTheme" title="الوضع الليلي/النهاري">☯</button></div>
+    <div class="toolbar">
+      <select id="schemeSelect" aria-label="اختيار الألوان">
+        <option value="brown">بني كلاسيكي</option>
+        <option value="olive">زيتوني</option>
+        <option value="teal">تركوازي</option>
+        <option value="indigo">نيلي</option>
+      </select>
+      <button id="toggleTheme" title="الوضع الليلي/النهاري">☯</button>
+    </div>
   </div>
 </header>
 
@@ -23,7 +31,7 @@
       <div class="kpi"><div class="label">التاريخ الهجري</div><div class="value secondary" id="hijri">—</div></div>
       <div class="kpi"><div class="label">الصلاة القادمة</div>
         <div class="value"><span id="nextPrayerName">—</span> <span class="small">(</span><span id="nextPrayerTime">—</span><span class="small">)</span></div>
-        <div class="small" id="nextCountdown">—</div>
+        <div id="nextCountdown">—</div>
       </div>
       <div class="kpi"><div class="label">المدينة</div><div class="value" id="cityDisplay">—</div><div class="small" id="ptMeta"></div></div>
     </div>
@@ -59,13 +67,13 @@
 
       <table class="table" style="margin-top:10px">
         <tr><th>الفجر</th><td id="t_fajr">—</td></tr>
-        <tr><th>الشروق</th><td id="t_sunrise">—</td></tr>
+        <tr class="minor"><th>الشروق</th><td id="t_sunrise">—</td></tr>
         <tr><th>الضحى</th><td id="t_duha">—</td></tr>
         <tr><th>الظهر</th><td id="t_dhuhr">—</td></tr>
         <tr><th>العصر</th><td id="t_asr">—</td></tr>
         <tr><th>المغرب</th><td id="t_maghrib">—</td></tr>
         <tr><th>العشاء</th><td id="t_isha">—</td></tr>
-        <tr><th>الثلث الأخير</th><td id="t_lastthird">—</td></tr>
+        <tr class="minor"><th>الثلث الأخير</th><td id="t_lastthird">—</td></tr>
       </table>
       <p class="small" style="margin:10px 0 0">الضحى: (الشروق + 15 دقيقة) إلى (قبل الظهر بـ 10 دقائق). الثلث الأخير محسوب من المغرب إلى فجر الغد.</p>
     </section>
@@ -75,20 +83,17 @@
       <div class="compass"><div class="dial"></div><div id="needle" class="needle"></div></div>
       <div class="row"><button class="btn" id="enableCompass">تفعيل البوصلة</button><span class="small" id="compassStatus"></span></div>
       <div class="small" id="compassAccuracy"></div>
-      <p class="small">ضع الهاتف أفقيًا بعيدًا عن المعادن، وقد تحتاج حركة «رقم 8» للمعايرة.</p>
     </section>
 
     <section id="adhkar" class="section">
       <p class="small">اختر القسم ثم تظهر الأذكار مرتبة (مع روابط للمصادر).</p>
       <div id="adhkarPills" class="pills"></div>
       <div id="adhkarContainer"></div>
-      <p class="small">تُحفظ التكرارات لليوم الحالي فقط.</p>
     </section>
 
     <section id="tasbeeh" class="section">
       <div class="row" style="justify-content:center"><div class="kpi"><div class="label">العدّاد</div><div class="value" id="tasbeehCount">0</div></div></div>
       <div class="row" style="justify-content:center;margin-top:8px"><button class="btn" id="tasbeehBtn">اضغط للتسبيح</button><button class="btn danger" id="tasbeehReset">تصفير</button></div>
-      <p class="small" style="text-align:center">اهتزاز خفيف لكل ضغطة، واهتزاز مميز كل 33.</p>
     </section>
 
     <section id="learning" class="section">
@@ -102,10 +107,8 @@
 
     <section id="tools" class="section">
       <h3>حاسبة الزكاة (2.5%)</h3>
-      <p class="small">أدخل النصاب (مثلاً قيمة 85 جرام ذهب) ومبلغ أموالك الزكوية.</p>
       <div class="row"><input id="nisab" type="number" inputmode="decimal" placeholder="النصاب"/><input id="amount" type="number" inputmode="decimal" placeholder="مبلغ الأموال"/></div>
       <div class="kpi" style="margin-top:10px"><div class="label">النتيجة</div><div class="value" id="zakatOut">—</div></div>
-      <p class="small">* حاسبة مبسطة (2.5%).</p>
     </section>
 
     <section id="resources" class="section">
@@ -113,12 +116,20 @@
     </section>
 
     <section id="about" class="section">
-      <p>تم تحسين الأداء بإخفاء تحميل الأقسام الثقيلة حتى تفتحها (الأذكار/الروابط/التعلّم) + تحسين الواجهة.</p>
+      <p>إصدار كلاسيكي بألوان مريحة وزخارف خفيفة + خيارات ألوان + تحديث فوري عند توفر إصدار جديد.</p>
       <ul><li>الإصدار: 0.1</li></ul>
     </section>
 
   </div>
 </main>
+
+<div id="updateBar">
+  <div class="msg">تحديث جديد متوفر</div>
+  <div class="row" style="margin:0">
+    <button class="btn" id="updateNow">تحديث الآن</button>
+    <button class="btn secondary" id="updateLater">لاحقًا</button>
+  </div>
+</div>
 
 <div class="footer">© رفيق المسلم · الإصدار: <span id="footerVersion">0.1</span></div>
 <script src="./assets/js/app.js" type="module"></script>

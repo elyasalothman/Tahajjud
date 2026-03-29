@@ -1,4 +1,4 @@
-const CACHE = 'rafiq-fast-cache-20260329-072118';
+const CACHE = 'rafiq-classic-cache-20260329-074252';
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +14,25 @@ const ASSETS = [
   './data/resources.json',
   './data/learning.json'
 ];
-self.addEventListener('install', (e)=>{ self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))); });
-self.addEventListener('activate', (e)=>{ e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())); });
-self.addEventListener('fetch', (e)=>{ e.respondWith(caches.match(e.request).then(r=> r || fetch(e.request).catch(()=>caches.match('./index.html')))); });
+
+self.addEventListener('install', (e)=>{
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));
+});
+
+self.addEventListener('activate', (e)=>{
+  e.waitUntil(
+    caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+      .then(()=> self.clients.claim())
+  );
+});
+
+self.addEventListener('message', (e)=>{
+  if(e.data && e.data.type==='SKIP_WAITING') self.skipWaiting();
+});
+
+self.addEventListener('fetch', (e)=>{
+  e.respondWith(
+    caches.match(e.request).then(r=> r || fetch(e.request).catch(()=>caches.match('./index.html')))
+  );
+});
