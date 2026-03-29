@@ -1,4 +1,4 @@
-// Rafiq Muslim v0.3.0
+// Rafiq Muslim v0.3.1
 const API_BASE='https://api.aladhan.com/v1';
 const KAABA={lat:21.4225,lon:39.8262};
 const BDC_REVERSE='https://api-bdc.net/data/reverse-geocode-client';
