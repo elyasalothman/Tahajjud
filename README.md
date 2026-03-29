@@ -1,1 +1,1 @@
-Expanded adhkar build
+Fixed footer + bigger working tasbeeh
