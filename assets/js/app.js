@@ -1,4 +1,4 @@
-// Rafiq Muslim v0.2.5
+// Rafiq Muslim v0.2.6
 const API_BASE='https://api.aladhan.com/v1';
 const KAABA={lat:21.4225,lon:39.8262};
 const BDC_REVERSE='https://api-bdc.net/data/reverse-geocode-client';
@@ -59,13 +59,11 @@ function initNav(){
     window.scrollTo({top:0,behavior:'smooth'});
   }));
 }
-function renderFooterVersion(){setText('footerVersion',`الإصدار 0.2.5`); setText('footerBrand','رفيق المسلم');}
 function initCityList(){
   const cities=[{label:'الرياض',city:'Riyadh',country:'SA'},{label:'مكة المكرمة',city:'Makkah',country:'SA'},{label:'المدينة المنورة',city:'Al Madinah al Munawwarah',country:'SA'},{label:'جدة',city:'Jeddah',country:'SA'},{label:'الدمام',city:'Dammam',country:'SA'},{label:'الطائف',city:'Taif',country:'SA'},{label:'أبها',city:'Abha',country:'SA'},{label:'تبوك',city:'Tabuk',country:'SA'}]; 
   const sel=qs('#citySelect'); if(!sel) return; 
   cities.forEach(c=>{const o=document.createElement('option'); o.value=JSON.stringify(c); o.textContent=c.label; sel.appendChild(o);}); 
   const saved=LS('cityFallback'); if(saved) sel.value=saved; 
-  // تحديث فوري للأوقات عند تغيير المدينة
   sel.addEventListener('change',()=>{
     LS('cityFallback',sel.value); 
     updateCityKPIFromSelect();
@@ -78,10 +76,28 @@ function updateCityKPI(t){setText('cityDisplay',t||'—')}
 function updateCityKPIFromSelect(){const sel=qs('#citySelect'); if(sel&&sel.value) try{const o=JSON.parse(sel.value); updateCityKPI(o.label||o.city)}catch(e){} else {const c=getCityFallback(); updateCityKPI(c.label||c.city||'—')}}
 async function reverseGeocodeCity(lat,lon){const key=`rg:${lat.toFixed(3)},${lon.toFixed(3)}`; const cached=LS(key); if(cached) try{return JSON.parse(cached)}catch(e){} const u=`${BDC_REVERSE}?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&localityLanguage=ar`; const r=await fetch(u); const j=await r.json(); const out={city:j.city||j.locality||j.principalSubdivision||null}; LS(key,JSON.stringify(out)); return out;}
 function renderNextPrayer(T,fajrTomorrowISO){
-  const order=['Fajr','Dhuhr','Asr','Maghrib','Isha']; const now=new Date(); let name=null,time=null; 
-  for(const k of order){const d=isoToDate(T[k]); if(d>now){name=k; time=d; break;}} 
-  if(!name){name='Fajr'; time=isoToDate(fajrTomorrowISO);} 
-  setText('nextPrayerName',translatePrayer(name)); setText('nextPrayerTime',formatTime12h(time)); 
+  const order=['Fajr','Dhuhr','Asr','Maghrib','Isha']; 
+  const now=new Date(); let nextName=null,time=null, currName='Isha'; 
+  
+  for(let i=0; i<order.length; i++){
+    const k = order[i];
+    const d=isoToDate(T[k]); 
+    if(d>now){
+      nextName=k; 
+      time=d; 
+      currName = i === 0 ? 'Isha' : order[i-1];
+      break;
+    }
+  } 
+  if(!nextName){nextName='Fajr'; time=isoToDate(fajrTomorrowISO); currName='Isha';} 
+  
+  setText('nextPrayerName',translatePrayer(nextName)); setText('nextPrayerTime',formatTime12h(time)); 
+  
+  // تظليل الصلاة الحالية
+  qsa('.table tbody tr').forEach(tr => tr.classList.remove('current-prayer'));
+  const currRow = qs('#tr_' + currName);
+  if(currRow) currRow.classList.add('current-prayer');
+
   if(nextTimer) clearInterval(nextTimer); 
   nextTimer=setInterval(()=>{
     const diff=time-new Date(); 
@@ -118,9 +134,29 @@ async function loadPrayerTimes(forceCity=false){
       td=await fetchTimingsByCity(today,c.city,c.country); td2=await fetchTimingsByCity(tomorrow,c.city,c.country);
     } 
     const T=td.timings, TT=td2.timings; 
-    ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'].forEach(k=>setText('t_'+k.toLowerCase(),formatTime12h(isoToDate(T[k])))); 
-    const duha=computeDuha(T.Sunrise,T.Dhuhr); setText('t_duha',`${formatTime12h(duha.start)} – ${formatTime12h(duha.end)}`); 
-    const last=computeLastThird(T.Maghrib,TT.Fajr); setText('t_lastthird',`${formatTime12h(last.start)} – ${formatTime12h(last.end)}`); 
+    
+    // أوقات الدخول
+    ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'].forEach(k=>{
+      const el = qs('#t_'+k.toLowerCase()+'_s');
+      if(el) el.textContent = formatTime12h(isoToDate(T[k]));
+    }); 
+    
+    // أوقات الخروج
+    setText('t_fajr_e', formatTime12h(isoToDate(T.Sunrise)));
+    setText('t_sunrise_e', '—');
+    setText('t_dhuhr_e', formatTime12h(isoToDate(T.Asr)));
+    setText('t_asr_e', formatTime12h(isoToDate(T.Maghrib)));
+    setText('t_maghrib_e', formatTime12h(isoToDate(T.Isha)));
+    setText('t_isha_e', formatTime12h(isoToDate(T.Midnight)));
+
+    const duha=computeDuha(T.Sunrise,T.Dhuhr); 
+    setText('t_duha_s', formatTime12h(duha.start)); 
+    setText('t_duha_e', formatTime12h(duha.end)); 
+    
+    const last=computeLastThird(T.Maghrib,TT.Fajr); 
+    setText('t_lastthird_s', formatTime12h(last.start)); 
+    setText('t_lastthird_e', formatTime12h(last.end)); 
+    
     renderNextPrayer(T,TT.Fajr);
   }catch(e){
     console.warn(e); setText('ptStatus','تعذّر التحديد التلقائي. اختر مدينة من القائمة.');
@@ -137,5 +173,5 @@ async function loadResources(){const data=await (await fetch('./data/resources.j
 async function loadLearning(){const data=await (await fetch('./data/learning.json')).json(); const plan=qs('#learnPlan'), col=qs('#learnCollections'), rem=qs('#learnReminders'); if(plan){plan.innerHTML=''; (data.plan||[]).forEach(it=>{const d=document.createElement('div'); d.className='pager-card'; d.innerHTML=`<b>${it.title}</b><div class="small">${it.tip}</div>`; plan.appendChild(d);});} if(col){col.innerHTML=''; (data.collections||[]).forEach(it=>{const li=document.createElement('li'); li.innerHTML=`<a href="${it.url}" target="_blank" rel="noopener">${it.title}</a>`; col.appendChild(li);});} if(rem){rem.innerHTML=''; (data.reminders||[]).forEach(t=>{const li=document.createElement('li'); li.textContent=t; rem.appendChild(li);});}}
 function showUpdateBar(reg){const bar=qs('#updateBar'); if(!bar) return; bar.style.display='flex'; qs('#updateNow')?.addEventListener('click',()=>{if(reg.waiting) reg.waiting.postMessage({type:'SKIP_WAITING'});},{once:true}); qs('#updateLater')?.addEventListener('click',()=>{bar.style.display='none';},{once:true});}
 async function registerSW(){if(!('serviceWorker' in navigator)) return; const reg=await navigator.serviceWorker.register('./service-worker.js',{scope:'./'}); try{await reg.update();}catch(e){} navigator.serviceWorker.addEventListener('controllerchange',()=>window.location.reload(),{once:true}); if(reg.waiting) showUpdateBar(reg); reg.addEventListener('updatefound',()=>{const sw=reg.installing; if(!sw) return; sw.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller) showUpdateBar(reg);});});}
-async function init(){CFG=await (await fetch('./assets/js/config.json')).json(); initTheme(); initScheme(); initNav(); initCityList(); renderHijri(); renderFooterVersion(); loadStoredQibla(); setupCompass(); setupTasbeeh(); qs('#useLocation')?.addEventListener('click',()=>loadPrayerTimes(false)); await loadPrayerTimes(false); await registerSW();}
+async function init(){CFG=await (await fetch('./assets/js/config.json')).json(); initTheme(); initScheme(); initNav(); initCityList(); renderHijri(); loadStoredQibla(); setupCompass(); setupTasbeeh(); qs('#useLocation')?.addEventListener('click',()=>loadPrayerTimes(false)); await loadPrayerTimes(false); await registerSW();}
 window.addEventListener('load',init);
