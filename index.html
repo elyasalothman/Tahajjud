@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#1a1410"/>
   <link rel="manifest" href="./manifest.webmanifest"/>
   <link rel="icon" href="./assets/img/icon-192.png"/>
-  <link rel="stylesheet" href="./assets/css/styles.css?v=0.2.6"/>
+  <link rel="stylesheet" href="./assets/css/styles.css?v=0.2.9"/>
   <title>رفيق المسلم</title>
 </head>
 <body>
@@ -36,7 +36,7 @@
 
   <div class="card">
     <section id="times" class="section active">
-      <div class="row" style="display: flex; flex-wrap: nowrap; gap: 8px;">
+      <div class="row" id="locationControls" style="display: flex; flex-wrap: nowrap; gap: 8px;">
         <button class="btn" id="useLocation" title="تحديد موقعي التلقائي" style="padding: 0 16px; font-size: 1.4rem;">📍</button>
         <select id="citySelect" style="flex: 1;"><option value="">— اختر مدينة يدوياً —</option></select>
       </div>
@@ -53,16 +53,25 @@
           </thead>
           <tbody>
             <tr id="tr_Fajr"><th>الفجر</th><td id="t_fajr_s" style="text-align: center; font-weight: bold;">—</td><td id="t_fajr_e" class="small" style="text-align: center;">—</td></tr>
-            <tr class="minor" id="tr_Sunrise"><th>الشروق</th><td id="t_sunrise_s" style="text-align: center; font-weight: bold;">—</td><td id="t_sunrise_e" class="small" style="text-align: center;">—</td></tr>
-            <tr id="tr_Duha"><th>الضحى</th><td id="t_duha_s" style="text-align: center; font-weight: bold;">—</td><td id="t_duha_e" class="small" style="text-align: center;">—</td></tr>
+            <tr class="minor" id="tr_Duha"><th>الضحى</th><td id="t_duha_s" style="text-align: center; font-weight: bold;">—</td><td id="t_duha_e" class="small" style="text-align: center;">—</td></tr>
             <tr id="tr_Dhuhr"><th>الظهر</th><td id="t_dhuhr_s" style="text-align: center; font-weight: bold;">—</td><td id="t_dhuhr_e" class="small" style="text-align: center;">—</td></tr>
             <tr id="tr_Asr"><th>العصر</th><td id="t_asr_s" style="text-align: center; font-weight: bold;">—</td><td id="t_asr_e" class="small" style="text-align: center;">—</td></tr>
-            <tr id="tr_Maghrib"><th>المغرب</th><td id="t_maghrib_s" style="text-align: center; font-weight: bold;">—</td><td id="t_maghrib_e" class="small" style="text-align: center;">—</td></tr>
-            <tr id="tr_Isha"><th>العشاء</th><td id="t_isha_s" style="text-align: center; font-weight: bold;">—</td><td id="t_isha_e" class="small" style="text-align: center;">—</td></tr>
+            <tr id="tr_Maghrib"><th>المغرب</th><td id="t_maghrib_s" style="text-align: center; font-weight: bold;">—</td><td id="t_maghrib_e" class="small" style="text-align: center; color: var(--accent2); font-weight: bold;">—</td></tr>
+            <tr id="tr_Isha"><th>العشاء</th>
+              <td style="text-align: center; font-weight: bold;">
+                <span id="t_isha_s">—</span>
+                <span class="small" style="display: block; color: var(--accent2); font-weight: normal; margin-top: 2px;">(حقيقي: <span id="t_isha_true_s">—</span>)</span>
+              </td>
+              <td id="t_isha_e" class="small" style="text-align: center;">—</td>
+            </tr>
             <tr class="minor" id="tr_Lastthird"><th>الثلث الأخير</th><td id="t_lastthird_s" style="text-align: center; font-weight: bold;">—</td><td id="t_lastthird_e" class="small" style="text-align: center;">—</td></tr>
           </tbody>
         </table>
       </div>
+      <p class="small" style="margin:10px 0 0; line-height: 1.8;">
+        • <b>تنبيه:</b> وقت المغرب ينتهي شرعاً بمغيب الشفق الأحمر (وقت العشاء الحقيقي)، فلا تؤخر صلاتك للأذان الرسمي.<br>
+        • <b>الثلث الأخير:</b> يُحسب بتقسيم إجمالي الوقت من أذان المغرب إلى أذان الفجر على ثلاثة.
+      </p>
     </section>
 
     <section id="qibla" class="section">
@@ -127,9 +136,9 @@
 </nav>
 
 <div class="tiny-footer">
-  رفيق المسلم - الإصدار 0.2.6
+  رفيق المسلم - الإصدار 0.2.9
 </div>
 
-<script src="./assets/js/app.js?v=0.2.6" type="module"></script>
+<script src="./assets/js/app.js?v=0.2.9" type="module"></script>
 </body>
 </html>
