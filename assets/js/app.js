@@ -1,79 +1,123 @@
-// Rafiq Muslim v0.7.2 - Fixed Location & API Fetch
+// Rafiq Muslim - Master Fix v0.8.0
 const API_BASE = 'https://api.aladhan.com/v1';
-const qs = (s, r = document) => r.querySelector(s);
-const setText = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
 
-// دالة جلب اسم المدينة من الإحداثيات
-async function reverseGeocodeCity(lat, lon) {
-    try {
-        const r = await fetch(`https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ar`);
-        const data = await r.json();
-        return data.city || data.locality || "موقعي الحالي";
-    } catch (e) { return "موقعي الحالي"; }
-}
+// دالة مساعدة للتعامل مع العناصر بصورة آمنة
+const updateElement = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+};
 
-// دالة جلب أوقات الصلاة من API المؤذن
-async function fetchTimes(lat, lon) {
+// تحميل البيانات (أذكار، فوائد، إلخ)
+async function loadData() {
     try {
-        const r = await fetch(`${API_BASE}/timings?latitude=${lat}&longitude=${lon}&method=4`);
-        const data = await r.json();
-        if (data.code === 200) {
-            updateUI(data.data);
+        const [adhkarRes, benefitsRes] = await Promise.allSettled([
+            fetch('assets/data/adhkar.json').then(res => res.json()),
+            fetch('assets/data/benefits.json').then(res => res.json())
+        ]);
+
+        if (adhkarRes.status === 'fulfilled') {
+            const adhkar = adhkarRes.value;
+            const randomDhikr = adhkar[Math.floor(Math.random() * adhkar.length)];
+            updateElement('adhkar-text', randomDhikr.content || randomDhikr.text);
         }
-    } catch (e) {
-        console.error("خطأ في جلب الأوقات:", e);
+
+        if (benefitsRes.status === 'fulfilled') {
+            const benefits = benefitsRes.value;
+            const randomBenefit = benefits[Math.floor(Math.random() * benefits.length)];
+            updateElement('benefit-text', randomBenefit.content || randomBenefit.text);
+        }
+    } catch (err) {
+        console.error("خطأ في تحميل البيانات:", err);
     }
 }
 
-// تحديث الواجهة بالبيانات المستلمة
-function updateUI(data) {
-    const t = data.timings;
-    // تحديث الجدول (بناءً على المعرفات في index.html)
-    setText('t_fajr_s', t.Fajr);
-    setText('t_dhuhr_s', t.Dhuhr);
-    setText('t_asr_s', t.Asr);
-    setText('t_maghrib_s', t.Maghrib);
-    setText('t_isha_s', t.Isha);
-    setText('hijri', data.date.hijri.date);
-    // يمكن إضافة منطق حساب العد التنازلي هنا
-}
-
-async function loadPrayerTimes(forceCity = false) {
-    const ptStatus = qs('#ptStatus');
-    if (ptStatus) { ptStatus.style.display = 'none'; }
-
-    if (!forceCity && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            async (pos) => {
-                const { latitude: lat, longitude: lon } = pos.coords;
-                
-                // 1. تحديث اسم المدينة
-                const cityName = await reverseGeocodeCity(lat, lon);
-                setText('cityDisplay', cityName);
-                
-                // 2. جلب الأوقات الفعلية
-                await fetchTimes(lat, lon);
-            },
-            (err) => {
-                // معالجة الخطأ هنا بدلاً من throw
-                if (ptStatus) {
-                    ptStatus.style.display = 'block';
-                    ptStatus.className = 'small location-error';
-                    ptStatus.textContent = 'يرجى تفعيل صلاحية الموقع في المتصفح.';
+// جلب أوقات الصلاة
+async function updatePrayerTimes() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+                const response = await fetch(`${API_BASE}/timings?latitude=${latitude}&longitude=${longitude}&method=4`);
+                const data = await response.json();
+                if (data.code === 200) {
+                    displayPrayerTimes(data.data);
                 }
-            },
-            { timeout: 10000 }
-        );
+            } catch (err) {
+                console.error("خطأ في الاتصال بـ API:", err);
+            }
+        }, (error) => {
+            updateElement('city_name', 'يرجى تفعيل الموقع الجغرافي');
+        });
     }
 }
 
-// ربط الأزرار عند تحميل الصفحة
-window.addEventListener('load', () => {
-    loadPrayerTimes();
-    
-    // تفعيل زر الموقع اليدوي 📍
-    const locBtn = document.getElementById('useLocation');
-    if (locBtn) {
-        locBtn.addEventListener('click', () => loadPrayerTimes(false));
+function displayPrayerTimes(data) {
+    const timings = data.timings;
+    const prayers = {
+        'Fajr': 't_fajr',
+        'Sunrise': 't_sunrise',
+        'Dhuhr': 't_dhuhr',
+        'Asr': 't_asr',
+        'Maghrib': 't_maghrib',
+        'Isha': 't_isha'
+    };
+
+    for (const [key, id] of Object.entries(prayers)) {
+        updateElement(id, timings[key].split(' ')[0]);
     }
+
+    updateElement('city_name', data.meta.timezone);
+    updateElement('hijri_date', `${data.date.hijri.day} ${data.date.hijri.month.ar} ${data.date.hijri.year}`);
+    
+    startCountdown(timings);
+}
+
+function startCountdown(timings) {
+    const prayerOrder = [
+        { name: "الفجر", key: "Fajr" },
+        { name: "الشروق", key: "Sunrise" },
+        { name: "الظهر", key: "Dhuhr" },
+        { name: "العصر", key: "Asr" },
+        { name: "المغرب", key: "Maghrib" },
+        { name: "العشاء", key: "Isha" }
+    ];
+
+    const timer = setInterval(() => {
+        const now = new Date();
+        let nextPrayer = null;
+
+        for (let p of prayerOrder) {
+            const [hours, minutes] = timings[p.key].split(':');
+            const pDate = new Date();
+            pDate.setHours(parseInt(hours), parseInt(minutes), 0);
+
+            if (pDate > now) {
+                nextPrayer = { name: p.name, time: pDate };
+                break;
+            }
+        }
+
+        // إذا انتهت كل صلوات اليوم، الصلاة القادمة هي فجر الغد
+        if (!nextPrayer) {
+            const [hours, minutes] = timings['Fajr'].split(':');
+            const pDate = new Date();
+            pDate.setDate(pDate.getDate() + 1);
+            pDate.setHours(parseInt(hours), parseInt(minutes), 0);
+            nextPrayer = { name: "الفجر", time: pDate };
+        }
+
+        const diff = nextPrayer.time - now;
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+
+        updateElement('next_prayer_name', nextPrayer.name);
+        updateElement('countdown', `${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`);
+    }, 1000);
+}
+
+// التشغيل عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    updatePrayerTimes();
 });
