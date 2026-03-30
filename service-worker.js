@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rafiq-cache-v0.6.2';
+const CACHE_NAME = 'rafiq-cache-v0.8.5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
