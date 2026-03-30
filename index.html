@@ -84,21 +84,26 @@
       <div id="adhkarContainer"></div>
     </section>
 
-    <section id="tasbeeh" class="section">
-      <div class="tasbeeh-wrap">
-        <div class="tasbeeh-meta">
-          <select id="tasbeehPhraseSelect" aria-label="اختيار التسبيح"></select>
-          <button class="btn secondary" id="tasbeehNext" style="font-size: 1.4rem;">التالي</button>
-        </div>
-        <div class="current-tasbeeh" id="currentTasbeeh">سُبْحَانَ اللَّهِ</div>
-        <div class="tasbeeh-kpi">
-          <div class="card inner-card"><div class="kpi"><div class="label">العدّاد</div><div class="tasbeeh-counter" id="tasbeehCount">0</div></div></div>
-          <div class="card inner-card"><div class="kpi"><div class="label">الهدف</div><div class="tasbeeh-target" id="tasbeehTarget">الهدف: 33</div></div></div>
-        </div>
-        <div class="tasbeeh-main-btn-wrap"><button class="tasbeeh-btn" id="tasbeehBtn">سَبِّح</button></div>
-        <div class="tasbeeh-secondary-row"><button class="btn danger tasbeeh-reset-small" id="tasbeehReset">تصفير</button></div>
-      </div>
-    </section>
+   <section id="tasbeeh" class="section">
+  <div class="tasbeeh-wrap">
+    <div class="tasbeeh-meta" style="display: flex; gap: 8px; align-items: center;">
+      <select id="tasbeehPhraseSelect" style="flex: 1;"></select>
+      <button class="btn danger" id="tasbeehReset" style="padding: 10px; min-width: 60px;">تصفير</button>
+      <button class="btn secondary" id="tasbeehNext">Next</button>
+    </div>
+    
+    <div class="current-tasbeeh" id="currentTasbeeh">سُبْحَانَ اللَّهِ</div>
+    
+    <div class="tasbeeh-kpi">
+      <div class="card inner-card"><div class="kpi"><div class="label">العدّاد</div><div class="tasbeeh-counter" id="tasbeehCount">0</div></div></div>
+      <div class="card inner-card"><div class="kpi"><div class="label">الهدف</div><div class="tasbeeh-target" id="tasbeehTarget">33</div></div></div>
+    </div>
+
+    <div class="tasbeeh-main-btn-wrap" style="margin-top: 30px;">
+      <button class="tasbeeh-btn" id="tasbeehBtn" style="width: 220px; height: 220px; font-size: 3rem;">سَبِّح</button>
+    </div>
+  </div>
+</section>
 
     <section id="learning" class="section">
       <h3 class="section-title">فائدة اليوم</h3>
@@ -161,10 +166,7 @@
   </div>
 </section>
       </div>
-      
-      <div style="text-align: center; padding: 20px 10px; color: var(--muted); font-size: 1.2rem; font-weight: bold; font-family: Arial, sans-serif;">
-        الإصدار 0.6.2
-      </div>
+    
     </section>
   </div>
 </main>
@@ -183,6 +185,6 @@
   <button data-target="settings" title="الإعدادات">⚙️</button>
 </nav>
 
-<script src="./assets/js/app.js?v=0.6.2" type="module"></script>
+<script src="./assets/js/app.js" type="module"></script>
 </body>
 </html>
