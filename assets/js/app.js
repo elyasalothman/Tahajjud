@@ -1,44 +1,79 @@
-// Rafiq Muslim v0.7.1 - Fixed City Name & Error Bar
+// Rafiq Muslim v0.7.2 - Fixed Location & API Fetch
 const API_BASE = 'https://api.aladhan.com/v1';
-const KAABA = { lat: 21.4225, lon: 39.8262 };
 const qs = (s, r = document) => r.querySelector(s);
 const setText = (id, t) => { const e = document.getElementById(id); if (e) e.textContent = t; };
-const LS = (k, v) => (v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v));
 
+// دالة جلب اسم المدينة من الإحداثيات
 async function reverseGeocodeCity(lat, lon) {
     try {
         const r = await fetch(`https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ar`);
-        return await r.json();
-    } catch (e) { return null; }
+        const data = await r.json();
+        return data.city || data.locality || "موقعي الحالي";
+    } catch (e) { return "موقعي الحالي"; }
+}
+
+// دالة جلب أوقات الصلاة من API المؤذن
+async function fetchTimes(lat, lon) {
+    try {
+        const r = await fetch(`${API_BASE}/timings?latitude=${lat}&longitude=${lon}&method=4`);
+        const data = await r.json();
+        if (data.code === 200) {
+            updateUI(data.data);
+        }
+    } catch (e) {
+        console.error("خطأ في جلب الأوقات:", e);
+    }
+}
+
+// تحديث الواجهة بالبيانات المستلمة
+function updateUI(data) {
+    const t = data.timings;
+    // تحديث الجدول (بناءً على المعرفات في index.html)
+    setText('t_fajr_s', t.Fajr);
+    setText('t_dhuhr_s', t.Dhuhr);
+    setText('t_asr_s', t.Asr);
+    setText('t_maghrib_s', t.Maghrib);
+    setText('t_isha_s', t.Isha);
+    setText('hijri', data.date.hijri.date);
+    // يمكن إضافة منطق حساب العد التنازلي هنا
 }
 
 async function loadPrayerTimes(forceCity = false) {
     const ptStatus = qs('#ptStatus');
-    // إخفاء الشريط الأحمر في البداية
-    if (ptStatus) { ptStatus.style.display = 'none'; ptStatus.textContent = ''; }
+    if (ptStatus) { ptStatus.style.display = 'none'; }
 
-    try {
-        if (!forceCity && navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude, lon = pos.coords.longitude;
+    if (!forceCity && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+                const { latitude: lat, longitude: lon } = pos.coords;
                 
-                // جلب اسم المدينة الحقيقي وعرضه
-                const cityData = await reverseGeocodeCity(lat, lon);
-                const cityName = (cityData && cityData.city) ? cityData.city : "مدينتي";
+                // 1. تحديث اسم المدينة
+                const cityName = await reverseGeocodeCity(lat, lon);
                 setText('cityDisplay', cityName);
                 
-                // هنا يتم جلب الأوقات (تكملة الكود المعتاد لديك...)
-                // renderTimes(data); 
-            }, (err) => { throw err; });
-        }
-    } catch (e) {
-        // إظهار الشريط الأحمر فقط عند وجود خطأ حقيقي
-        if (ptStatus) {
-            ptStatus.style.display = 'block';
-            ptStatus.className = 'small location-error';
-            ptStatus.textContent = 'تعذر تحديد الموقع الدقيق، جاري استخدام التوقيت التقريبي.';
-        }
+                // 2. جلب الأوقات الفعلية
+                await fetchTimes(lat, lon);
+            },
+            (err) => {
+                // معالجة الخطأ هنا بدلاً من throw
+                if (ptStatus) {
+                    ptStatus.style.display = 'block';
+                    ptStatus.className = 'small location-error';
+                    ptStatus.textContent = 'يرجى تفعيل صلاحية الموقع في المتصفح.';
+                }
+            },
+            { timeout: 10000 }
+        );
     }
 }
-// تأكد من استدعاء الدالة عند التحميل
-window.addEventListener('load', () => loadPrayerTimes(false));
+
+// ربط الأزرار عند تحميل الصفحة
+window.addEventListener('load', () => {
+    loadPrayerTimes();
+    
+    // تفعيل زر الموقع اليدوي 📍
+    const locBtn = document.getElementById('useLocation');
+    if (locBtn) {
+        locBtn.addEventListener('click', () => loadPrayerTimes(false));
+    }
+});
