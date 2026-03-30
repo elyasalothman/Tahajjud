@@ -1,123 +1,129 @@
-// Rafiq Muslim - Master Fix v0.8.0
+// Rafiq Muslim - Master Fix v0.8.5
 const API_BASE = 'https://api.aladhan.com/v1';
 
-// دالة مساعدة للتعامل مع العناصر بصورة آمنة
-const updateElement = (id, text) => {
+// دالة مساعدة لتحديث النصوص في الواجهة بأمان
+const updateUI = (id, text) => {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
 };
 
-// تحميل البيانات (أذكار، فوائد، إلخ)
-async function loadData() {
+// 1. جلب البيانات (الأذكار والفوائد)
+async function loadAppData() {
     try {
-        const [adhkarRes, benefitsRes] = await Promise.allSettled([
-            fetch('assets/data/adhkar.json').then(res => res.json()),
-            fetch('assets/data/benefits.json').then(res => res.json())
-        ]);
-
-        if (adhkarRes.status === 'fulfilled') {
-            const adhkar = adhkarRes.value;
-            const randomDhikr = adhkar[Math.floor(Math.random() * adhkar.length)];
-            updateElement('adhkar-text', randomDhikr.content || randomDhikr.text);
-        }
-
-        if (benefitsRes.status === 'fulfilled') {
-            const benefits = benefitsRes.value;
-            const randomBenefit = benefits[Math.floor(Math.random() * benefits.length)];
-            updateElement('benefit-text', randomBenefit.content || randomBenefit.text);
-        }
+        const response = await fetch('./assets/data/benefits.json');
+        const benefits = await response.json();
+        const randomBenefit = benefits[Math.floor(Math.random() * benefits.length)];
+        updateUI('dailyBenefitContent', randomBenefit);
     } catch (err) {
-        console.error("خطأ في تحميل البيانات:", err);
+        console.error("فشل تحميل الفوائد:", err);
     }
 }
 
-// جلب أوقات الصلاة
-async function updatePrayerTimes() {
+// 2. إدارة أوقات الصلاة والموقع
+async function initPrayerTimes() {
+    const ptStatus = document.getElementById('ptStatus');
+    if (ptStatus) ptStatus.style.display = 'none';
+
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const { latitude, longitude } = position.coords;
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const { latitude: lat, longitude: lon } = pos.coords;
+            
+            // جلب اسم المدينة
             try {
-                const response = await fetch(`${API_BASE}/timings?latitude=${latitude}&longitude=${longitude}&method=4`);
-                const data = await response.json();
-                if (data.code === 200) {
-                    displayPrayerTimes(data.data);
-                }
-            } catch (err) {
-                console.error("خطأ في الاتصال بـ API:", err);
+                const cityRes = await fetch(`https://api-bdc.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ar`);
+                const cityData = await cityRes.json();
+                updateUI('cityDisplay', cityData.city || "موقعي الحالي");
+            } catch (e) { updateUI('cityDisplay', "موقعي"); }
+
+            // جلب الأوقات الفعلية
+            fetchPrayerTimes(lat, lon);
+        }, (err) => {
+            if (ptStatus) {
+                ptStatus.style.display = 'block';
+                ptStatus.textContent = 'يرجى تفعيل صلاحية الموقع لتحديث الأوقات.';
             }
-        }, (error) => {
-            updateElement('city_name', 'يرجى تفعيل الموقع الجغرافي');
         });
     }
 }
 
-function displayPrayerTimes(data) {
-    const timings = data.timings;
-    const prayers = {
-        'Fajr': 't_fajr',
-        'Sunrise': 't_sunrise',
-        'Dhuhr': 't_dhuhr',
-        'Asr': 't_asr',
-        'Maghrib': 't_maghrib',
-        'Isha': 't_isha'
-    };
-
-    for (const [key, id] of Object.entries(prayers)) {
-        updateElement(id, timings[key].split(' ')[0]);
-    }
-
-    updateElement('city_name', data.meta.timezone);
-    updateElement('hijri_date', `${data.date.hijri.day} ${data.date.hijri.month.ar} ${data.date.hijri.year}`);
-    
-    startCountdown(timings);
+async function fetchPrayerTimes(lat, lon) {
+    try {
+        const res = await fetch(`${API_BASE}/timings?latitude=${lat}&longitude=${lon}&method=4`);
+        const data = await res.json();
+        if (data.code === 200) {
+            renderTimes(data.data);
+        }
+    } catch (err) { console.error("API Error:", err); }
 }
 
-function startCountdown(timings) {
+function renderTimes(data) {
+    const t = data.timings;
+    
+    // تحديث الجدول (المعرفات مطابقة لـ index.html)
+    updateUI('t_fajr_s', t.Fajr);
+    updateUI('t_fajr_e', t.Sunrise); // الشروق هو نهاية وقت الفجر
+    updateUI('t_dhuhr_s', t.Dhuhr);
+    updateUI('t_asr_s', t.Asr);
+    updateUI('t_maghrib_s', t.Maghrib);
+    updateUI('t_isha_s', t.Isha);
+    updateUI('t_isha_true_s', t.Isha);
+    
+    updateUI('hijri', `${data.date.hijri.day} ${data.date.hijri.month.ar} ${data.date.hijri.year}`);
+    
+    setupCountdown(t);
+}
+
+function setupCountdown(timings) {
     const prayerOrder = [
-        { name: "الفجر", key: "Fajr" },
-        { name: "الشروق", key: "Sunrise" },
-        { name: "الظهر", key: "Dhuhr" },
-        { name: "العصر", key: "Asr" },
-        { name: "المغرب", key: "Maghrib" },
-        { name: "العشاء", key: "Isha" }
+        { name: "الفجر", time: timings.Fajr },
+        { name: "الظهر", time: timings.Dhuhr },
+        { name: "العصر", time: timings.Asr },
+        { name: "المغرب", time: timings.Maghrib },
+        { name: "العشاء", time: timings.Isha }
     ];
 
-    const timer = setInterval(() => {
+    setInterval(() => {
         const now = new Date();
-        let nextPrayer = null;
+        let next = null;
 
         for (let p of prayerOrder) {
-            const [hours, minutes] = timings[p.key].split(':');
+            const [h, m] = p.time.split(':');
             const pDate = new Date();
-            pDate.setHours(parseInt(hours), parseInt(minutes), 0);
+            pDate.setHours(h, m, 0);
 
             if (pDate > now) {
-                nextPrayer = { name: p.name, time: pDate };
+                next = { name: p.name, time: pDate, clock: p.time };
                 break;
             }
         }
 
-        // إذا انتهت كل صلوات اليوم، الصلاة القادمة هي فجر الغد
-        if (!nextPrayer) {
-            const [hours, minutes] = timings['Fajr'].split(':');
-            const pDate = new Date();
-            pDate.setDate(pDate.getDate() + 1);
-            pDate.setHours(parseInt(hours), parseInt(minutes), 0);
-            nextPrayer = { name: "الفجر", time: pDate };
+        if (next) {
+            updateUI('nextPrayerName', next.name);
+            updateUI('nextPrayerTime', next.clock);
+            
+            const diff = next.time - now;
+            const hours = Math.floor(diff / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            const secs = Math.floor((diff % 60000) / 1000);
+            updateUI('nextCountdown', `${hours}:${mins < 10 ? '0'+mins : mins}:${secs < 10 ? '0'+secs : secs}`);
         }
-
-        const diff = nextPrayer.time - now;
-        const h = Math.floor(diff / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-
-        updateElement('next_prayer_name', nextPrayer.name);
-        updateElement('countdown', `${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`);
     }, 1000);
 }
 
-// التشغيل عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    updatePrayerTimes();
+// 3. التحكم في التنقل (Tabs)
+document.querySelectorAll('.bottom-nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = btn.dataset.target;
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(target).classList.add('active');
+        
+        document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    });
+});
+
+// التشغيل الابتدائي
+window.addEventListener('load', () => {
+    loadAppData();
+    initPrayerTimes();
 });
