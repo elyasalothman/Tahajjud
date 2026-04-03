@@ -127,6 +127,34 @@
 <section id="quran" class="section">
   <h3 class="section-title">القرآن الكريم</h3>
   
+  <div class="pills" id="quranTabs">
+    <button class="active" onclick="toggleQuranView('list')">قائمة السور</button>
+    <button onclick="toggleQuranView('live')">البث المباشر</button>
+  </div>
+
+  <div id="liveBroadcast" style="display: none;">
+    <div class="card" style="margin-bottom: 16px; padding: 15px; text-align: center;">
+      <div class="label" style="margin-bottom: 10px;">إذاعة القرآن الكريم من المملكة العربية السعودية</div>
+      <audio controls style="width: 100%;" src="https://stream.radio.gov.sa/quran"></audio>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 1fr;">
+      <div class="card" style="padding: 10px;">
+        <div class="label" style="margin-bottom: 8px; text-align: center;">بث مباشر - مكة المكرمة</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UC8H-Z5_R-UPr1f8k0iVpXwA" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 10px;">
+        <div class="label" style="margin-bottom: 8px; text-align: center;">بث مباشر - المدينة المنورة</div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UC9S9p7m7r8I6S7pYtG5pG5A" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div id="quranReader" style="display:none;">
     <button id="backToSurahs" style="font-size: 2.5rem; background: transparent; border: none; cursor: pointer; color: var(--accent); margin-bottom: 15px; padding: 0;">&rarr;</button>
     <div id="surahTitle" style="text-align:center; font-size: 2rem; color: var(--accent); font-weight:bold; margin-bottom: 20px;"></div>

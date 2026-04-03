@@ -435,3 +435,30 @@ document.addEventListener('click', (e) => {
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
 });
+
+// دالة التبديل بين قائمة السور والبث المباشر
+function toggleQuranView(view) {
+  const list = document.getElementById('surahList');
+  const live = document.getElementById('liveBroadcast');
+  const reader = document.getElementById('quranReader');
+  const buttons = document.querySelectorAll('#quranTabs button');
+
+  // تحديث حالة الأزرار
+  buttons.forEach(btn => {
+    btn.classList.toggle('active', (view === 'list' && btn.textContent.includes('قائمة')) || (view === 'live' && btn.textContent.includes('البث')));
+  });
+
+  if (view === 'list') {
+    list.style.display = 'grid';
+    live.style.display = 'none';
+    reader.style.display = 'none';
+  } else {
+    list.style.display = 'none';
+    live.style.display = 'block';
+    reader.style.display = 'none';
+    haptic(10); // اهتزاز بسيط عند التبديل
+  }
+}
+
+// جعل الدالة متاحة عالمياً
+window.toggleQuranView = toggleQuranView;

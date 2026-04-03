@@ -259,3 +259,24 @@ main{
 }
 .back-btn { font-size: 2.5rem; background: none; border: none; color: var(--accent); cursor: pointer; }
 .reader-title { font-size: 1.4rem; font-weight: bold; color: var(--accent); }
+/* تنسيق مشغل الفيديو ليكون متجاوباً */
+.video-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9; /* يحافظ على أبعاد الفيديو */
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #000;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+
+#quranTabs {
+  margin-bottom: 20px;
+  grid-template-columns: 1fr 1fr; /* تقسيم الزرين بالتساوي */
+}
