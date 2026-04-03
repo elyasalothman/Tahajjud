@@ -373,93 +373,65 @@ async function init(){
   await loadPrayerTimes(false); await registerSW();
 }
 window.addEventListener('load',init);
-// متغيرات تتبع القرآن
-let currentQuranPage = 1;
 
-// 1. جعل الدوال عالمية لتعمل مع onclick في الـ Module
-window.switchQuranTab = (type) => {
-  qsa('#quranTabs button').forEach(b => b.classList.toggle('active', b.innerText.includes(type === 'surah' ? 'السور' : 'الأجزاء')));
-  qs('#surahList').style.display = type === 'surah' ? 'grid' : 'none';
-  qs('#juzList').style.display = type === 'juz' ? 'grid' : 'none';
-  if (type === 'juz' && qs('#juzList').innerHTML === '') loadJuzList();
-};
 
-window.closeQuranReader = () => {
-  qs('#quranReader').style.display = 'none';
-  qs('#quranMainUI').style.display = 'block';
-};
-
-window.changeQuranPage = (dir) => {
-  const target = currentQuranPage - dir; // المصحف يتقدم لليمين في الصفحات (نقصان الرقم)
-  if (target >= 1 && target <= 604) openPage(target);
-};
-
-// 2. تحميل قائمة السور (معدلة لتفتح أول صفحة في السورة)
 async function loadSurahList() {
   try {
     const res = await fetch('https://api.alquran.cloud/v1/surah');
     const data = await res.json();
     const container = qs('#surahList');
+    if (!container) return;
     container.innerHTML = '';
     data.data.forEach(s => {
       const el = document.createElement('div');
       el.className = 'surah-card';
-      el.innerHTML = `<div class="surah-name">${s.name}</div><div class="surah-meta">آياتها: ${s.numberOfAyahs}</div>`;
-      // نستخدم API لجلب رقم صفحة بداية السورة
-      el.onclick = () => fetchSurahStartPage(s.number);
+      el.innerHTML = `<div class="surah-name">${s.name}</div><div class="surah-meta">آياتها: ${s.numberOfAyahs} | ${s.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}</div>`;
+      el.addEventListener('click', () => openSurah(s.number, s.name));
       container.appendChild(el);
     });
-  } catch (e) { container.innerHTML = 'خطأ في التحميل.'; }
-}
-
-async function fetchSurahStartPage(num) {
-  const res = await fetch(`https://api.alquran.cloud/v1/surah/${num}`);
-  const data = await res.json();
-  openPage(data.data.ayahs[0].page);
-}
-
-// 3. تحميل قائمة الأجزاء
-function loadJuzList() {
-  const container = qs('#juzList');
-  const mapping = [1,22,42,62,82,102,122,142,162,182,202,222,242,262,282,302,322,342,362,382,402,422,442,462,482,502,522,542,562,582];
-  let html = '';
-  for (let i = 1; i <= 30; i++) {
-    html += `<div class="surah-card" onclick="openPage(${mapping[i-1]})">
-                <div class="surah-name">الجزء ${i}</div>
-              </div>`;
+  } catch (e) {
+    if(qs('#surahList')) qs('#surahList').innerHTML = '<div style="text-align:center; grid-column: 1 / -1;">حدث خطأ في تحميل السور.</div>';
   }
-  container.innerHTML = html;
 }
 
-// 4. دالة فتح الصفحة (القراءة الفعلية)
-async function openPage(pageBox) {
-  currentQuranPage = pageBox;
+async function openSurah(num, name) {
+  qs('#surahList').style.display = 'none';
   const reader = qs('#quranReader');
-  const textElem = qs('#quranText');
-  reader.style.display = 'flex';
-  qs('#quranMainUI').style.display = 'none';
-  textElem.innerHTML = '<div style="text-align:center;">جاري التحميل...</div>';
+  reader.style.display = 'block';
+  qs('#surahTitle').textContent = 'جاري التحميل...';
+  qs('#quranText').innerHTML = '';
   
   try {
-    const res = await fetch(`https://api.alquran.cloud/v1/page/${pageBox}/quran-uthmani`);
+    const res = await fetch(`https://api.alquran.cloud/v1/surah/${num}/quran-uthmani`);
     const data = await res.json();
+    qs('#surahTitle').textContent = name;
     
     let html = '';
-    data.data.ayahs.forEach(a => {
-      if (a.numberInSurah === 1 && a.surah.number !== 1 && a.surah.number !== 9) {
-        html += `<div style="text-align:center; color:var(--accent2); margin: 20px 0; font-size: 1.8rem;">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>`;
-        a.text = a.text.replace('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ', '');
-      }
+    if (num !== 1 && num !== 9) {
+      html += '<div style="text-align:center; font-size:1.8rem; margin-bottom:15px; color:var(--accent2);">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>';
+    }
+    
+    let ayahs = data.data.ayahs;
+    if(num !== 1 && num !== 9 && ayahs[0].text.startsWith('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ')){
+        ayahs[0].text = ayahs[0].text.replace('بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ', '');
+    }
+
+    ayahs.forEach(a => {
       html += `<span class="ayah-text">${a.text}</span><span class="ayah-number">${a.numberInSurah}</span> `;
     });
     
-    textElem.innerHTML = html;
-    qs('#readerTitle').textContent = `صفحة ${pageBox}`;
-    qs('#pageInfo').textContent = `صـ ${pageBox} من ٦٠٤`;
-    textElem.scrollTop = 0;
-  } catch (e) { textElem.innerHTML = 'خطأ في جلب البيانات.'; }
+    qs('#quranText').innerHTML = html;
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } catch (e) {
+    qs('#quranText').innerHTML = '<div style="text-align:center;">حدث خطأ في تحميل الآيات.</div>';
+  }
 }
 
-// ربط الدوال بـ Window ليراها الـ HTML
-window.openPage = openPage;
-window.loadSurahList = loadSurahList;
+// تفعيل زر الرجوع
+document.addEventListener('click', (e) => {
+  if (e.target && e.target.id === 'backToSurahs') {
+    qs('#quranReader').style.display = 'none';
+    qs('#surahList').style.display = 'grid';
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+});

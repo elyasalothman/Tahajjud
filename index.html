@@ -125,35 +125,16 @@
       <div id="usefulLinks"></div>
     </section>
 <section id="quran" class="section">
-  <div id="quranMainUI">
-    <h3 class="section-title">القرآن الكريم</h3>
-    
-    <div class="pills" id="quranTabs" style="margin-bottom: 20px;">
-      <button class="active" onclick="switchQuranTab('surah')">السور</button>
-      <button onclick="switchQuranTab('juz')">الأجزاء</button>
-    </div>
-
-    <div id="surahList" class="surah-grid">
-       <div style="text-align:center; width:100%; grid-column: 1 / -1;">جاري تحميل السور...</div>
-    </div>
-
-    <div id="juzList" class="surah-grid" style="display:none;"></div>
+  <h3 class="section-title">القرآن الكريم</h3>
+  
+  <div id="quranReader" style="display:none;">
+    <button id="backToSurahs" style="font-size: 2.5rem; background: transparent; border: none; cursor: pointer; color: var(--accent); margin-bottom: 15px; padding: 0;">&rarr;</button>
+    <div id="surahTitle" style="text-align:center; font-size: 2rem; color: var(--accent); font-weight:bold; margin-bottom: 20px;"></div>
+    <div id="quranText" style="font-size: 2.2rem; line-height: 2.5; text-align: justify; font-family: 'Amiri', serif;"></div>
   </div>
 
-  <div id="quranReader" class="reader-overlay" style="display:none;">
-    <div class="reader-header">
-      <button onclick="closeQuranReader()" class="back-btn">&rarr;</button>
-      <div id="readerTitle" class="reader-title">صفحة ...</div>
-      <div style="width: 40px;"></div>
-    </div>
-    
-    <div id="quranText" class="quran-content-area"></div>
-
-    <div class="reader-footer">
-       <button onclick="changeQuranPage(-1)" class="btn secondary tiny">الصفحة السابقة</button>
-       <span id="pageInfo" class="small" style="color:var(--muted)"></span>
-       <button onclick="changeQuranPage(1)" class="btn secondary tiny">الصفحة التالية</button>
-    </div>
+  <div id="surahList" class="surah-grid">
+     <div style="text-align:center; width:100%; grid-column: 1 / -1;">جاري تحميل السور...</div>
   </div>
 </section>
     <section id="settings" class="section">
