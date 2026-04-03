@@ -199,3 +199,77 @@ main{
   .pills button { font-size: 1.1rem; padding: 8px 2px; min-height: 50px; }
   .bottom-nav button { font-size: 2.1rem; padding: 18px 0; }
 }
+.surah-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.surah-card { background: var(--bg); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); text-align: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--card-shadow); }
+.surah-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.surah-name { font-size: 1.6rem; font-weight: bold; color: var(--accent); }
+.surah-meta { font-size: 1.1rem; color: var(--muted); margin-top: 5px; }
+
+.ayah-text { display: inline; }
+.ayah-number { 
+  display: inline-flex; align-items: center; justify-content: center; 
+  width: 36px; height: 36px; margin: 0 8px; font-size: 1.1rem; color: var(--accent);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cpath fill='none' stroke='%23d4af37' stroke-width='1.5' d='M18 2L22.5 7L29.5 8.5L30.5 15.5L35 20.5L30.5 25.5L29.5 32.5L22.5 34L18 39L13.5 34L6.5 32.5L5.5 25.5L1 20.5L5.5 15.5L6.5 8.5L13.5 7Z'/%3E%3C/svg%3E") no-repeat center center; 
+  background-size: contain; 
+}
+/* أضف هذا النمط في ملف styles.css */
+.small, .table tr.minor th, .table tr.minor td {
+  font-size: 1.1rem !important; /* حجم خط صغير وموحد */
+  color: var(--muted) !important;
+  font-weight: normal !important;
+}
+/* أضف هذه الأنماط في نهاية ملف assets/css/styles.css */
+
+/* توحيد حجم خط الأرقام في الجدول */
+.time-font {
+  font-size: 1.4rem !important;
+  font-weight: bold !important;
+  font-family: Arial, sans-serif; /* استخدام خط سليم للأرقام لضمان التساوي */
+}
+
+/* توحيد الحجم الصغير (الضحى، الثلث الأخير، دقة الموقع، وتفاصيل العشاء) */
+.small, .table tr.minor th, .table tr.minor td {
+  font-size: 1.05rem !important; 
+  color: var(--muted) !important;
+  font-weight: normal !important;
+}
+
+/* ضبط عناوين الجدول */
+.table thead th {
+  font-size: 1.2rem !important;
+  padding: 12px 5px !important;
+}
+/* واجهة القراءة الكاملة للقرآن */
+.reader-overlay {
+  position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+  display: flex; flex-direction: column; 
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+.reader-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 15px; border-bottom: 1px solid var(--border); background: var(--bg2);
+}
+.quran-content-area {
+  flex: 1; overflow-y: auto; padding: 30px 20px;
+  font-size: 2.2rem; line-height: 2.8; text-align: justify; font-family: 'Amiri', serif;
+}
+.reader-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; background: var(--bg2); border-top: 1px solid var(--border);
+}
+.back-btn { font-size: 2.5rem; background: none; border: none; color: var(--accent); cursor: pointer; }
+.reader-title { font-size: 1.4rem; font-weight: bold; color: var(--accent); }
+/* تنسيقات قسم القرآن الكريم والبث */
+.surah-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.surah-card { background: var(--bg); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); text-align: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--card-shadow); }
+.surah-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.surah-name { font-size: 1.6rem; font-weight: bold; color: var(--accent); }
+.surah-meta { font-size: 1.1rem; color: var(--muted); margin-top: 5px; }
+
+.video-container {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: var(--radius); overflow: hidden; background: #000; margin-top: 10px;
+}
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+#quranTabs { margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
