@@ -1,10 +1,10 @@
 {
-  "name": "رفيق المسلم",
-  "short_name": "رفيق",
+  "name": "تهجد",
+  "short_name": "تهجد",
   "description": "رفيقك اليومي للأذكار والقرآن ومواقيت الصلاة",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "./",
+  "start_url": "https://tahajjud.alhajda.com/",
   "scope": "./",
   "display": "standalone",
   "background_color": "#1a1410",
