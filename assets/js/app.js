@@ -80,8 +80,14 @@ function initScheme() {
 
 function applyFontSize() { document.body.style.fontSize = currentFontSize + 'rem'; LS('fontSize', currentFontSize); }
 
-function checkNotify(prayerName) { if (window.Notification && Notification.permission === 'granted') { new Notification('رفيق المسلم', { body: 'حان الآن موعد صلاة ' + prayerName, icon: './assets/img/icon-192.png' }); } }
-
+function checkNotify(prayerName) { 
+  if (window.Notification && Notification.permission === 'granted') { 
+    new Notification('تهجد', { 
+      body: 'حان الآن موعد صلاة ' + prayerName, 
+      icon: './assets/img/icon-192.png' 
+    }); 
+  } 
+}
 function initUI() {
   qs('#btnTextInc')?.addEventListener('click', () => { currentFontSize += 0.1; applyFontSize(); });
   qs('#btnTextDec')?.addEventListener('click', () => { currentFontSize = Math.max(1, currentFontSize - 0.1); applyFontSize(); });
