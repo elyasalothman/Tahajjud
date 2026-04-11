@@ -689,3 +689,37 @@ document.getElementById('btnPrevPage')?.addEventListener('click', () => openPage
 
 // جعل دالة فتح السورة متاحة عالمياً للاستخدام عبر الأزرار الخارجية
 window.openSurah = openSurah;
+
+let deferredPrompt;
+const installContainer = document.getElementById('installContainer');
+const btnInstallApp = document.getElementById('btnInstallApp');
+
+// الإمساك بحدث طلب التثبيت من المتصفح
+window.addEventListener('beforeinstallprompt', (e) => {
+  // منع المتصفح من إظهار التنبيه التلقائي
+  e.preventDefault();
+  // حفظ الحدث لاستخدامه لاحقاً
+  deferredPrompt = e;
+  // إظهار الحاوية المخفية في واجهة التطبيق
+  if (installContainer) installContainer.style.display = 'block';
+});
+
+// تنفيذ التثبيت عند الضغط على الزر
+btnInstallApp?.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  // إظهار نافذة التثبيت الخاصة بالمتصفح
+  deferredPrompt.prompt();
+  // انتظار رد المستخدم
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    console.log('User accepted the install prompt');
+    if (installContainer) installContainer.style.display = 'none';
+  }
+  deferredPrompt = null;
+});
+
+// إخفاء الزر إذا تم تثبيت التطبيق بالفعل
+window.addEventListener('appinstalled', () => {
+  if (installContainer) installContainer.style.display = 'none';
+  deferredPrompt = null;
+});
