@@ -253,8 +253,19 @@ function setupCompass() {
   function render(q, h) {
     // حساب الزاوية النهائية
     const angle = normalize360(q - h);
-    // استخدام التدوير فقط لمنع حركة "فوق تحت"
     needle.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+    
+    // التحقق من التطابق مع القبلة (بفارق 4 درجات يميناً أو يساراً لتسهيل التثبيت)
+    if (angle < 4 || angle > 356) {
+        needle.style.background = '#10b981'; // لون أخضر عند التطابق
+        needle.style.boxShadow = '0 0 20px #10b981';
+        acc.innerHTML = '<span style="color:#10b981; font-weight:bold; font-size:1.3rem;">أنت متجه للقبلة الآن ✅</span>';
+    } else {
+        needle.style.background = 'var(--danger)'; // اللون الأساسي (أحمر)
+        needle.style.boxShadow = '0 4px 8px rgba(0,0,0,0.5)';
+        acc.textContent = 'قم بالدوران حتى يتجه السهم للأعلى (ويصبح أخضر)';
+        acc.style.color = 'var(--muted)';
+    }
   } 
 
   function onOri(ev) {
@@ -263,9 +274,6 @@ function setupCompass() {
     // للأيفون (Safari)
     if (typeof ev.webkitCompassHeading === 'number' && ev.webkitCompassHeading >= 0) {
       heading = ev.webkitCompassHeading; 
-      if (typeof ev.webkitCompassAccuracy === 'number' && ev.webkitCompassAccuracy > 30) {
-        acc.textContent = 'يرجى تحريك الهاتف على شكل 8 لمعايرة البوصلة 🔄';
-      } else { acc.textContent = ''; }
     } 
     // للأندرويد والمتصفحات الداعمة لـ Absolute
     else if (typeof ev.alpha === 'number') {
@@ -277,15 +285,15 @@ function setupCompass() {
     // الحصول على زاوية القبلة المخزنة
     const qibla = parseFloat(LS('qiblaBearing') || '0') || 0;
 
-    // تنعيم الحركة لمنع القفز السريع
+    // تنعيم الحركة لمنع القفز السريع والارتجاج
     if (lastHeading === null) {
       lastHeading = heading;
     } else {
-      // دالة حساب أقصر مسافة للدوران لمنع الالتفاف الكامل (Shortest Path)
       let diff = heading - lastHeading;
       if (diff > 180) diff -= 360;
       if (diff < -180) diff += 360;
-      lastHeading += diff * 0.2; // معامل التنعيم
+      // تقليل المعامل من 0.2 إلى 0.08 لزيادة النعومة والدقة
+      lastHeading += diff * 0.08; 
     }
 
     render(qibla, lastHeading);
@@ -477,9 +485,8 @@ qs('#backToSurahs')?.addEventListener('click', () => {
 });
 
 async function init(){
-  const fallbackConfig = { calculation: { method: 4, school: 0 }, duha: { startOffsetAfterSunriseMin: 15, endOffsetBeforeDhuhrMin: 10 }, defaultCity: { label: 'مكة المكرمة', city: 'Makkah', country: 'SA' } };
-  CFG = await fetchJSON('./assets/js/config.json', fallbackConfig); 
-  initScheme(); initUI(); initNav(); initCityList(); renderHijri(); loadStoredQibla(); setupCompass(); setupTasbeeh(); 
+  CFG = { calculation: { method: 4, school: 0 }, duha: { startOffsetAfterSunriseMin: 15, endOffsetBeforeDhuhrMin: 10 }, defaultCity: { label: 'مكة المكرمة', city: 'Makkah', country: 'SA' } };
+   initScheme(); initUI(); initNav(); initCityList(); renderHijri(); loadStoredQibla(); setupCompass(); setupTasbeeh(); 
   setupTrueIshaToggle(); 
   qs('#useLocation')?.addEventListener('click',()=>loadPrayerTimes(false)); 
   await loadPrayerTimes(false); await registerSW();
@@ -679,3 +686,6 @@ document.getElementById('backToSurahs')?.addEventListener('click', () => {
 
 document.getElementById('btnNextPage')?.addEventListener('click', () => openPage(currentQuranPage + 1));
 document.getElementById('btnPrevPage')?.addEventListener('click', () => openPage(currentQuranPage - 1));
+
+// جعل دالة فتح السورة متاحة عالمياً للاستخدام عبر الأزرار الخارجية
+window.openSurah = openSurah;
