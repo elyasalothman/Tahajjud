@@ -326,24 +326,6 @@ main{
 .back-btn { font-size: 2.5rem; background: none; border: none; color: var(--accent); cursor: pointer; }
 .reader-title { font-size: 1.4rem; font-weight: bold; color: var(--accent); }
 /* تنسيقات قسم القرآن الكريم والبث */
-.surah-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-.surah-card {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    margin-bottom: 10px;
-    background: var(--bg-card);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.surah-card:hover {
-    transform: scale(1.02);
-    border-right: 5px solid var(--primary);
-}
-.surah-name { font-size: 1.6rem; font-weight: bold; color: var(--accent); }
-.surah-meta { font-size: 1.1rem; color: var(--muted); margin-top: 5px; }
 
 .video-container {
   position: relative; width: 100%; aspect-ratio: 16 / 9;
@@ -358,7 +340,7 @@ main{
     line-height: 2.5;
     text-align: center;
     padding: 100px 20px 40px;
-    background: var(--bg-card);
+    background: var(--bg2);
     border-radius: 15px;
     direction: rtl;
 }
@@ -366,7 +348,7 @@ main{
 .quran-header {
     position: sticky;
     top: 0;
-    background: var(--bg-body);
+    background: var(--bg);
     z-index: 10;
     padding: 10px 0;
 }
@@ -391,3 +373,16 @@ main{
 .tafsir-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 20px; opacity: 0; animation: fadeIn 0.3s forwards; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
 .tafsir-card { background: var(--bg); padding: 30px 20px 20px; border-radius: var(--radius); border: 1px solid var(--border); max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.5); font-family: 'Amiri', serif; }
 .close-tafsir { position: absolute; top: 10px; left: 15px; background: var(--danger); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1.4rem; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+
+/* وضع القراءة الليلية للقرآن */
+.quran-night-mode {
+    background-color: #050505 !important;
+    color: #d4c4b7 !important;
+}
+.quran-night-mode .ayah-text:hover { background-color: rgba(255, 255, 255, 0.08) !important; }
+.quran-night-mode .ayah-active { background-color: rgba(212, 175, 55, 0.15) !important; color: #d4af37 !important; }
+.quran-night-mode .ayah-number {
+    background-color: #151515 !important;
+    color: #d4c4b7 !important;
+    border-color: #444 !important;
+}
